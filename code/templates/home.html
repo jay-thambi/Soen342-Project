@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Offerings</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Available Offerings</h1>
+    <ul>
+        {% for offering in offerings %}
+        <li>{{ offering.specialization }} at {{ offering.location }} ({{ offering.time_slot }})
+            {% if offering.instructor %}
+            - Taught by {{ offering.instructor.name }}
+            {% else %}
+            - <a class="btn-select" href="{{ url_for('select_offering', id=offering.id) }}">Select this offering</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <a class="btn-create" href="{{ url_for('create_offering') }}">Create New Offering</a>
+</div>
+</body>
+</html>

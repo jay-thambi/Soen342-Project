@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Offering</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<h1>Create Offering</h1>
+<form method="POST">
+    <label for="location">Location:</label>
+    <input type="text" name="location" required><br>
+
+    <label for="time_slot">Time Slot:</label>
+    <input type="text" name="time_slot" required><br>
+
+    <label for="specialization">Specialization:</label>
+    <input type="text" name="specialization" required><br>
+
+    <button type="submit">Create Offering</button>
+</form>
+<a href="{{ url_for('home') }}">Back</a>
+</body>
+</html>
