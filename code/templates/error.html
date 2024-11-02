@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Error</h1>
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('view_offerings') }}">View Offerings</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>{{ error_title }}</h2>
+  <p>{{ error_message }}</p>
+
+  <a href="{{ url_for('home') }}" class="btn-return">Return to Home</a>
+</div>
+
+<footer>
+  <p>&copy; 2024 SOEN 342 Team Project</p>
+</footer>
+</body>
+</html>
