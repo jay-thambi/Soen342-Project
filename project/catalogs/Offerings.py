@@ -1,4 +1,4 @@
-from code.models.models import db, Offering
+from project.models.models import db, Offering
 
 # --- Offering Management Functions ---
 

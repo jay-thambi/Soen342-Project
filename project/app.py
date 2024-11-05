@@ -1,15 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from project.models.models import db, Instructor, Offering
 from project.catalogs.Users import register_client, register_instructor, register_admin, get_user_by_email
 from project.catalogs.Offerings import create_offering, get_all_offerings, update_offering, delete_offering
 from flask_migrate import Migrate
+from functools import wraps
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.db')
 app.config['SECRET_KEY'] = 'your_secret_key'  # Needed for flashing messages
 db.init_app(app)
 
 migrate = Migrate(app, db)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get('user_role') != 'admin':
+            flash("Only administrators can access this page.", "error")
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Home Route
 @app.route('/')
@@ -18,6 +30,7 @@ def home():
 
 # Create Offering Route (Admin Only)
 @app.route('/create_offering', methods=['GET', 'POST'])
+@admin_required
 def create_offering_route():
     if request.method == 'POST':
         location = request.form['location']
@@ -127,12 +140,21 @@ def login():
         user = get_user_by_email(email)
 
         if user and user.password == password:
+            session['user_id'] = user.id
+            session['user_role'] = 'admin' if isinstance(user, Admin) else 'instructor' if isinstance(user, Instructor) else 'client'
             flash("Logged in successfully!", "success")
             return redirect(url_for('home'))
         else:
             flash("Invalid credentials.", "error")
 
     return render_template('login.html')
+
+# Logout Route
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("Logged out successfully!", "success")
+    return redirect(url_for('login'))
 
 # Error Handling Route
 @app.route('/error')

@@ -1,4 +1,4 @@
-from code.models.models import db, Client, Instructor, Admin
+from project.models.models import db, Client, Instructor
 
 # --- Client Management Functions ---
 
