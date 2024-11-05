@@ -1,0 +1,42 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+ENV/
+env/
+*.env
+
+# Database files
+*.sqlite3
+*.db
+
+# Flask migration files
+migrations/
+
+# Python specific logs and cache
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.cache
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Pytest cache and coverage reports
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
