@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Dashboard{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ current_user.name }}!</h2>
+
+<h3>Your Profiles</h3>
+<ul>
+    {% for client in clients %}
+    <li>{{ client.name }} (DOB: {{ client.date_of_birth }})</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{{ url_for('client.add_dependent') }}">Add Dependent</a></p>
+
+<h3>Your Bookings</h3>
+{% if bookings %}
+<table>
+    <tr>
+        <th>Client Name</th>
+        <th>Session Date</th>
+        <th>Lesson Type</th>
+        <th>Instructor</th>
+        <th>Status</th>
+    </tr>
+    {% for booking in bookings %}
+    <tr>
+        <td>{{ booking.client.name }}</td>
+        <td>{{ booking.session.date }}</td>
+        <td>{{ booking.session.offering.lesson_type.name }}</td>
+        <td>{{ booking.session.offering.instructor.user.name if booking.session.offering.instructor else 'TBD' }}</td>
+        <td>{{ booking.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>You have no bookings yet.</p>
+{% endif %}
+
+<p><a href="{{ url_for('client.view_offerings') }}">View Available Offerings</a></p>
+{% endblock %}

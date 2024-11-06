@@ -1,70 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Register</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-  <script>
-    function toggleFields() {
-      const role = document.getElementById('role').value;
-      const instructorFields = document.getElementById('instructor-fields');
+<!-- templates/register.html -->
+{% extends 'base.html' %}
 
-      if (role === 'instructor') {
-        instructorFields.style.display = 'block';
-      } else {
-        instructorFields.style.display = 'none';
-      }
-    }
-  </script>
-</head>
-<body>
-<header>
-  <h1>Register</h1>
-  <nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('login') }}">Login</a>
-  </nav>
-</header>
+{% block title %}Register{% endblock %}
 
-<div class="container">
-  <h2>Create an Account</h2>
+{% block content %}
+<h2>Register</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
 
-  <!-- Registration Form -->
-  <form method="POST" action="{{ url_for('register') }}">
-    <label for="name">Full Name:</label>
-    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+    <!-- Role Selection -->
+    {{ form.role.label }}<br>
+    {% for subfield in form.role %}
+        {{ subfield }} {{ subfield.label }}<br>
+    {% endfor %}
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    <!-- Common Fields -->
+    {{ form.name.label }} {{ form.name() }}<br>
+    {{ form.email.label }} {{ form.email() }}<br>
+    {{ form.phone_number.label }} {{ form.phone_number() }}<br>
+    {{ form.password.label }} {{ form.password() }}<br>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" placeholder="Enter a password" required>
-
-    <label for="role">Role:</label>
-    <select id="role" name="role" onchange="toggleFields()" required>
-      <option value="client">Client</option>
-      <option value="instructor">Instructor</option>
-      <option value="admin">Administrator</option>
-    </select>
-
-    <!-- Instructor-specific fields -->
-    <div id="instructor-fields" style="display: none;">
-      <label for="phone_number">Phone Number:</label>
-      <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number">
-
-      <label for="specialization">Specialization:</label>
-      <input type="text" id="specialization" name="specialization" placeholder="Enter your specialization">
-
-      <label for="available_cities">Available Cities:</label>
-      <input type="text" id="available_cities" name="available_cities" placeholder="Enter available cities, separated by commas">
+    <!-- Client-Specific Fields -->
+    <div id="client_fields" style="display:none;">
+        {{ form.date_of_birth.label }} {{ form.date_of_birth() }}<br>
     </div>
 
-    <button type="submit" class="btn-register">Register</button>
-  </form>
-</div>
+    <!-- Instructor-Specific Fields -->
+    <div id="instructor_fields" style="display:none;">
+        {{ form.specializations.label }}<br>
+        {{ form.specializations(size=5, multiple=True) }}<br>
+        {{ form.availability_cities.label }}<br>
+        {{ form.availability_cities(size=5, multiple=True) }}<br>
+    </div>
 
-<footer>
-  <p>&copy; 2024 SOEN 342 Team Project</p>
-</footer>
-</body>
-</html>
+    {{ form.submit() }}
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function toggleFields() {
+            var role = document.querySelector('input[name="role"]:checked').value;
+            var clientFields = document.getElementById('client_fields');
+            var instructorFields = document.getElementById('instructor_fields');
+
+            if (role === 'client') {
+                clientFields.style.display = 'block';
+                instructorFields.style.display = 'none';
+            } else if (role === 'instructor') {
+                clientFields.style.display = 'none';
+                instructorFields.style.display = 'block';
+            } else {
+                clientFields.style.display = 'none';
+                instructorFields.style.display = 'none';
+            }
+        }
+
+        // Attach event listeners to role radio buttons
+        var roleRadios = document.getElementsByName('role');
+        for (var i = 0; i < roleRadios.length; i++) {
+            roleRadios[i].addEventListener('change', toggleFields);
+        }
+
+        // Call toggleFields on page load
+        toggleFields();
+    });
+</script>
+{% endblock %}

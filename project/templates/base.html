@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Your App{% endblock %}</title>
+    <!-- Include Bootstrap CSS or other stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+<body>
+    <nav>
+        {% if current_user.is_authenticated %}
+            Hello, {{ current_user.name }}!
+            {% if current_user.role == 'client' %}
+                | <a href="{{ url_for('client.dashboard') }}">Client Dashboard</a>
+            {% elif current_user.role == 'instructor' %}
+                | <a href="{{ url_for('instructor.dashboard') }}">Instructor Dashboard</a>
+            {% elif current_user.role == 'admin' %}
+                | <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+            {% endif %}
+            | <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a> | <a href="{{ url_for('auth.register') }}">Register</a>
+        {% endif %}
+    </nav>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <!-- Include Bootstrap JS or other scripts -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>
