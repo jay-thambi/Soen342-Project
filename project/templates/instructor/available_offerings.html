@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Offerings{% endblock %}
+
+{% block content %}
+<h2>Available Offerings</h2>
+{% if offerings %}
+<table>
+    <tr>
+        <th>Lesson Type</th>
+        <th>Location</th>
+        <th>Mode</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Action</th>
+    </tr>
+    {% for offering in offerings %}
+    <tr>
+        <td>{{ offering.lesson_type.name }}</td>
+        <td>{{ offering.location.name }}</td>
+        <td>{{ offering.mode }}</td>
+        <td>{{ offering.start_date }}</td>
+        <td>{{ offering.end_date }}</td>
+        <td>
+            <form action="{{ url_for('instructor.accept_offering', offering_id=offering.id) }}" method="post">
+                <button type="submit">Accept</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No offerings available for you at this time.</p>
+{% endif %}
+{% endblock %}

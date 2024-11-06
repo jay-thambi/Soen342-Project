@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from ..models import User, db, Offering, LessonType, Location, City
-from ..forms import OfferingForm  # You'll need to create this form
+from ..forms import LessonTypeForm, OfferingForm  # You'll need to create this form
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -41,4 +41,15 @@ def create_offering():
         return redirect(url_for('admin.dashboard'))
     return render_template('admin/create_offering.html', form=form)
 
-# Additional admin routes for managing users, offerings, etc.
+@admin_bp.route('/lesson_types', methods=['GET', 'POST'])
+def manage_lesson_types():
+    form = LessonTypeForm()
+    if form.validate_on_submit():
+        new_lt = LessonType(name=form.name.data)
+        db.session.add(new_lt)
+        db.session.commit()
+        flash('Lesson type added.')
+        return redirect(url_for('admin.manage_lesson_types'))
+    lesson_types = LessonType.query.all()
+    return render_template('admin/lesson_types.html', form=form, lesson_types=lesson_types)
+

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Dependent{% endblock %}
+
+{% block content %}
+<h2>Add Dependent</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}<br>
+    {{ form.date_of_birth.label }} {{ form.date_of_birth() }}<br>
+    {{ form.submit() }}
+</form>
+{% endblock %}

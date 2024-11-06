@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from ..models import db, Offering, Booking, Session, Client
-from ..forms import BookingForm  # You'll need to create this form
+from ..forms import BookingForm, DependentForm
 
 client_bp = Blueprint('client', __name__)
 
@@ -38,17 +38,35 @@ def book_session(session_id):
             flash('This session is fully booked.')
             return redirect(url_for('client.view_offerings'))
 
-        # Create booking
-        client = Client.query.filter_by(user_id=current_user.id).first()
+        # Select client profile (if multiple exist)
+        client_id = form.client_id.data
         new_booking = Booking(
             session_id=session.id,
-            client_id=client.id,
+            client_id=client_id,
             status='active'
         )
         db.session.add(new_booking)
         db.session.commit()
         flash('Booking successful.')
         return redirect(url_for('client.dashboard'))
+    else:
+        # Populate client choices
+        client_profiles = Client.query.filter_by(user_id=current_user.id).all()
+        form.client_id.choices = [(client.id, client.name) for client in client_profiles]
     return render_template('client/book_session.html', form=form, session=session)
 
-# Additional client routes for managing bookings, profiles, etc.
+@client_bp.route('/add_dependent', methods=['GET', 'POST'])
+def add_dependent():
+    form = DependentForm()
+    if form.validate_on_submit():
+        # Create new client profile for the dependent
+        dependent = Client(
+            user_id=current_user.id,
+            name=form.name.data,
+            date_of_birth=form.date_of_birth.data
+        )
+        db.session.add(dependent)
+        db.session.commit()
+        flash('Dependent added successfully.')
+        return redirect(url_for('client.dashboard'))
+    return render_template('client/add_dependent.html', form=form)

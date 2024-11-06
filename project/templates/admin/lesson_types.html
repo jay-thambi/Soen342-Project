@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Lesson Types{% endblock %}
+
+{% block content %}
+<h2>Manage Lesson Types</h2>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}<br>
+    {{ form.submit() }}
+</form>
+
+<h3>Existing Lesson Types</h3>
+<ul>
+    {% for lt in lesson_types %}
+    <li>{{ lt.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

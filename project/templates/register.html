@@ -8,29 +8,60 @@
 <form method="post">
     {{ form.hidden_tag() }}
 
+    <!-- Display form-level errors -->
+    {% if form.errors %}
+        <ul class="errors">
+        {% for field_errors in form.errors.values() %}
+            {% for error in field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     <!-- Role Selection -->
     {{ form.role.label }}<br>
     {% for subfield in form.role %}
         {{ subfield }} {{ subfield.label }}<br>
     {% endfor %}
+    {% if form.role.errors %}
+        <span class="error">{{ form.role.errors[0] }}</span><br>
+    {% endif %}
 
     <!-- Common Fields -->
     {{ form.name.label }} {{ form.name() }}<br>
+    {% if form.name.errors %}
+        <span class="error">{{ form.name.errors[0] }}</span><br>
+    {% endif %}
+
     {{ form.email.label }} {{ form.email() }}<br>
-    {{ form.phone_number.label }} {{ form.phone_number() }}<br>
+    {% if form.email.errors %}
+        <span class="error">{{ form.email.errors[0] }}</span><br>
+    {% endif %}
+
     {{ form.password.label }} {{ form.password() }}<br>
+    {% if form.password.errors %}
+        <span class="error">{{ form.password.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.phone_number.label }} {{ form.phone_number() }}<br>
+    {% if form.phone_number.errors %}
+        <span class="error">{{ form.phone_number.errors[0] }}</span><br>
+    {% endif %}
 
     <!-- Client-Specific Fields -->
     <div id="client_fields" style="display:none;">
         {{ form.date_of_birth.label }} {{ form.date_of_birth() }}<br>
+        {% if form.date_of_birth.errors %}
+            <span class="error">{{ form.date_of_birth.errors[0] }}</span><br>
+        {% endif %}
     </div>
 
     <!-- Instructor-Specific Fields -->
     <div id="instructor_fields" style="display:none;">
         {{ form.specializations.label }}<br>
-        {{ form.specializations(size=5, multiple=True) }}<br>
-        {{ form.availability_cities.label }}<br>
-        {{ form.availability_cities(size=5, multiple=True) }}<br>
+        {{ form.specializations(size=5) }}<br>
+        {{ form.availability_cities(size=5) }}<br>
     </div>
 
     {{ form.submit() }}
@@ -46,12 +77,35 @@
             if (role === 'client') {
                 clientFields.style.display = 'block';
                 instructorFields.style.display = 'none';
+                // Enable client fields
+                clientFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = false;
+                });
+                // Disable instructor fields
+                instructorFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = true;
+                });
             } else if (role === 'instructor') {
                 clientFields.style.display = 'none';
                 instructorFields.style.display = 'block';
-            } else {
+                // Disable client fields
+                clientFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = true;
+                });
+                // Enable instructor fields
+                instructorFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = false;
+                });
+            } else if (role === 'admin') {
                 clientFields.style.display = 'none';
                 instructorFields.style.display = 'none';
+                // Disable both client and instructor fields
+                clientFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = true;
+                });
+                instructorFields.querySelectorAll('input, select').forEach(function(el) {
+                    el.disabled = true;
+                });
             }
         }
 

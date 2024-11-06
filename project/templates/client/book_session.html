@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Session{% endblock %}
+
+{% block content %}
+<h2>Book Session</h2>
+<p>Session Details:</p>
+<ul>
+    <li>Date: {{ session.date }}</li>
+    <li>Time: {{ session.start_time }} - {{ session.end_time }}</li>
+    <li>Capacity: {{ session.capacity }}</li>
+</ul>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.client_id.label }} {{ form.client_id() }}<br>
+    {{ form.submit() }}
+</form>
+{% endblock %}

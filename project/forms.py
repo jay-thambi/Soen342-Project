@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SelectMultipleField, StringField, PasswordField, SubmitField, SelectField, DateField, TimeField, IntegerField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, Length, Optional
 
 from .models import City, LessonType, Location
 
 class RegistrationForm(FlaskForm):
     # Common Fields
-    role = RadioField('Role', choices=[('client', 'Client'), ('instructor', 'Instructor')], validators=[DataRequired()])
+    role = RadioField('Role', choices=[('client', 'Client'), ('instructor', 'Instructor'), ('admin', 'Administrator')], validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired(), Length(1, 120)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone_number = StringField('Phone Number', validators=[DataRequired(), Length(1, 20)])
@@ -14,11 +14,11 @@ class RegistrationForm(FlaskForm):
     # password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
 
     # Client-Specific Fields
-    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d')
+    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d', validators=[Optional()])
 
     # Instructor-Specific Fields
-    specializations = SelectMultipleField('Specializations', coerce=int)
-    availability_cities = SelectMultipleField('Available Cities', coerce=int)
+    specializations = SelectMultipleField('Specializations', coerce=int, validators=[Optional()])
+    availability_cities = SelectMultipleField('Available Cities', coerce=int, validators=[Optional()])
 
     submit = SubmitField('Register')
 
@@ -45,6 +45,8 @@ class RegistrationForm(FlaskForm):
             if not self.availability_cities.data:
                 self.availability_cities.errors.append('At least one available city is required.')
                 return False
+        elif self.role.data == 'admin':
+            pass
         else:
             self.role.errors.append('Invalid role selected.')
             return False
@@ -55,34 +57,6 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
-
-class ClientRegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(1, 120)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    phone_number = StringField('Phone Number', validators=[DataRequired(), Length(1, 20)])
-    date_of_birth = DateField('Date of Birth', validators=[DataRequired()], format='%Y-%m-%d')
-    password = PasswordField('Password', validators=[DataRequired(), Length(6, 100)])
-    # password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
-
-class InstructorRegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(1, 120)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    phone_number = StringField('Phone Number', validators=[DataRequired(), Length(1, 20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(6, 100)])
-    # password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    specializations = SelectMultipleField('Specializations', coerce=int, validators=[DataRequired()])
-    availability_cities = SelectMultipleField('Available Cities', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Register')
-
-# class RegistrationForm(FlaskForm):
-#     name = StringField('Name', validators=[DataRequired(), Length(1, 120)])
-#     email = StringField('Email', validators=[DataRequired(), Email()])
-#     phone_number = StringField('Phone Number', validators=[DataRequired(), Length(1, 20)])
-#     password = PasswordField('Password', validators=[DataRequired(), Length(6, 100)])
-#     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-#     role = SelectField('Role', choices=[('client', 'Client'), ('instructor', 'Instructor'), ('admin', 'Administrator')], validators=[DataRequired()])
-#     submit = SubmitField('Register')
 
 class OfferingForm(FlaskForm):
     lesson_type = SelectField('Lesson Type', coerce=int, validators=[DataRequired()])
@@ -102,6 +76,14 @@ class OfferingForm(FlaskForm):
         self.location.choices = [(loc.id, loc.name) for loc in Location.query.all()]
 
 class BookingForm(FlaskForm):
+    client_id = SelectField('Select Client', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Book Session')
 
-# Additional forms as needed
+class DependentForm(FlaskForm):
+    name = StringField('Dependent Name', validators=[DataRequired(), Length(1, 120)])
+    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()])
+    submit = SubmitField('Add Dependent')
+
+class LessonTypeForm(FlaskForm):
+    name = StringField('Lesson Type Name', validators=[DataRequired(), Length(1, 120)])
+    submit = SubmitField('Add Lesson Type')
