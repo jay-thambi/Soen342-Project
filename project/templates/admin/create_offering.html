@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Offering{% endblock %}
+
+{% block content %}
+<h2>Create New Offering</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+
+    {{ form.lesson_type.label }}<br>
+    {{ form.lesson_type() }}<br>
+    {% if form.lesson_type.errors %}
+        <span class="error">{{ form.lesson_type.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.location.label }}<br>
+    {{ form.location() }}<br>
+    {% if form.location.errors %}
+        <span class="error">{{ form.location.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.mode.label }}<br>
+    {{ form.mode() }}<br>
+    {% if form.mode.errors %}
+        <span class="error">{{ form.mode.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.capacity.label }}<br>
+    {{ form.capacity() }}<br>
+    {% if form.capacity.errors %}
+        <span class="error">{{ form.capacity.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.start_date.label }}<br>
+    {{ form.start_date() }}<br>
+    {% if form.start_date.errors %}
+        <span class="error">{{ form.start_date.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.end_date.label }}<br>
+    {{ form.end_date() }}<br>
+    {% if form.end_date.errors %}
+        <span class="error">{{ form.end_date.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.day_of_week.label }}<br>
+    {{ form.day_of_week() }}<br>
+    {% if form.day_of_week.errors %}
+        <span class="error">{{ form.day_of_week.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.start_time.label }}<br>
+    {{ form.start_time() }}<br>
+    {% if form.start_time.errors %}
+        <span class="error">{{ form.start_time.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.end_time.label }}<br>
+    {{ form.end_time() }}<br>
+    {% if form.end_time.errors %}
+        <span class="error">{{ form.end_time.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.submit() }}
+</form>
+{% endblock %}

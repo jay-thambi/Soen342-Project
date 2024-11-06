@@ -75,6 +75,21 @@ class OfferingForm(FlaskForm):
         self.lesson_type.choices = [(lt.id, lt.name) for lt in LessonType.query.all()]
         self.location.choices = [(loc.id, loc.name) for loc in Location.query.all()]
 
+    def validate(self, **kwargs):
+        rv = super(OfferingForm, self).validate(**kwargs)
+        if not rv:
+            return False
+
+        if self.start_date.data > self.end_date.data:
+            self.end_date.errors.append('End date must be after start date.')
+            return False
+
+        if self.start_time.data >= self.end_time.data:
+            self.end_time.errors.append('End time must be after start time.')
+            return False
+
+        return True
+
 class BookingForm(FlaskForm):
     client_id = SelectField('Select Client', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Book Session')
