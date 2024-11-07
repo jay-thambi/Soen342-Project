@@ -16,11 +16,11 @@
 
 1. **Create and activate a virtual environment:**
    ```bash
+   From Soen342-Project directory:
    python3 -m venv venv
    source venv/bin/activate  # For macOS/Linux
    venv\\Scripts\\activate     # For Windows
-   pip install flask flask_sqlalchemy
-   python3 init_db.py
-   python3 app.py
+   $env:FLASK_APP = "project.app"
+   flask run
  
 ### Visit the app at http://127.0.0.1:5000/ in your browser.
