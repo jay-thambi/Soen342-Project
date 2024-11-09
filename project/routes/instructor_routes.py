@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from ..models import Session, db, Offering, Instructor
+from ..models import Location, Session, db, Offering, Instructor
 # from project.forms import AcceptOfferingForm  # You'll need to create this form
 
 instructor_bp = Blueprint('instructor', __name__)
@@ -28,7 +28,7 @@ def available_offerings():
     matching_offerings = Offering.query.filter(
         Offering.status == 'pending_instructor',
         Offering.lesson_type_id.in_([lt.id for lt in instructor.specializations]),
-        Offering.location.has(city_id.in_([city.id for city in instructor.availability_cities]))
+        Offering.location.has(Location.city_id.in_([city.id for city in instructor.availability_cities]))
     ).all()
     return render_template('instructor/available_offerings.html', offerings=matching_offerings)
 

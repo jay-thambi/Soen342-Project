@@ -44,12 +44,7 @@ class Instructor(db.Model):
     # Relationships
     specializations = db.relationship('LessonType', secondary='instructor_specializations', backref='instructors') # many-to-many
     availability_cities = db.relationship('City', secondary='instructor_cities', backref='instructors') # many-to-many
-    offerings = db.relationship('Offering', backref='instructor', lazy=True) # one-to-many
-
-    # specialization = db.Column(db.String(50), nullable=False)
-    # available_cities = db.Column(db.String(100), nullable=False)
-    # password = db.Column(db.String(100), nullable=False) 
-    # offerings = db.relationship('Offering', backref='instructor', lazy=True)
+    offerings = db.relationship('Offering', back_populates='assigned_instructor', lazy=True) # one-to-many
 
     def __repr__(self):
         return f"<Instructor {self.user.name}>"
@@ -68,7 +63,7 @@ class Location(db.Model):
     address = db.Column(db.String(150), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
     # Relationships
-    offerings = db.relationship('Offering', backref='location', lazy=True) # one-to-many
+    offerings = db.relationship('Offering', back_populates='location', lazy=True) # one-to-many
 
     def __repr__(self):
         city_name = self.city.name if self.city else "Unknown City"
@@ -90,7 +85,10 @@ class Offering(db.Model):
     end_time = db.Column(db.Time, nullable=False)
     status = db.Column(db.String(20), nullable=False)  # 'pending_instructor', 'available', 'closed'
     # Relationships
-    sessions = db.relationship('Session', backref='offering', lazy=True)
+    sessions = db.relationship('Session', backref='offering', lazy=True) # one-to-many
+    lesson_type = db.relationship('LessonType', backref='offerings') # many-to-one
+    location = db.relationship('Location', back_populates='offerings') # many-to-one
+    assigned_instructor = db.relationship('Instructor', back_populates='offerings') # many-to-one
 
     def __repr__(self):
         # Check if the location exists to avoid errors in representation

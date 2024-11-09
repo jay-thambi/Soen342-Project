@@ -20,9 +20,10 @@
     <tr>
         <td>{{ offering.lesson_type.name }}</td>
         <td>{{ offering.location.name }}</td>
-        <td>{{ offering.mode }}</td>
-        <td>{{ offering.start_date }}</td>
-        <td>{{ offering.end_date }}</td>
+        <td>{{ offering.instructor.user.name if offering.instructor else 'Unassigned' }}</td>
+        <!-- <td>{{ offering.mode }}</td> -->
+        <!-- <td>{{ offering.start_date }}</td> -->
+        <!-- <td>{{ offering.end_date }}</td> -->
         <td>{{ offering.status }}</td>
     </tr>
     {% endfor %}
