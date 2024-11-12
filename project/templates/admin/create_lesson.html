@@ -10,15 +10,23 @@
 
     {{ form.lesson_type.label }}<br>
     {{ form.lesson_type() }}<br>
-    {% if form.lesson_type.errors %}
-        <span class="error">{{ form.lesson_type.errors[0] }}</span><br>
-    {% endif %}
+    {% for error in form.lesson_type.errors %}
+        <span class="error">{{ error }}</span><br>
+    {% endfor %}
 
-    {{ form.description.label }}<br>
-    {{ form.description() }}<br>
-    {% if form.description.errors %}
-        <span class="error">{{ form.description.errors[0] }}</span><br>
-    {% endif %}
+    {{ form.location.label }}<br>
+    {{ form.location() }}<br>
+    {% for error in form.location.errors %}
+        <span class="error">{{ error }}</span><br>
+    {% endfor %}
+
+    {{ form.mode.label }}<br>
+    {{ form.mode() }}<br>
+    {% for error in form.mode.errors %}
+        <span class="error">{{ error }}</span><br>
+    {% endfor %}
+
+    <!-- Add other form fields similarly -->
 
     {{ form.submit() }}
 </form>

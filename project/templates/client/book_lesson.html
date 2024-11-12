@@ -1,0 +1,13 @@
+<!-- book_lesson.html -->
+{% extends 'base.html' %}
+
+{% block title %}Book Lesson{% endblock %}
+
+{% block content %}
+<h2>Book Lesson</h2>
+<p>You are booking: {{ lesson.lesson_type.name }} at {{ lesson.location.name }}</p>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.submit() }}
+</form>
+{% endblock %}

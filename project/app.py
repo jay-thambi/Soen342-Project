@@ -30,9 +30,6 @@ app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(client_bp, url_prefix='/client')
 app.register_blueprint(instructor_bp, url_prefix='/instructor')
 
-# Import models for migration
-from models import *
-
 @app.route('/')
 def index():
     return render_template('index.html')

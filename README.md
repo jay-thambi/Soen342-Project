@@ -22,5 +22,8 @@
    venv\\Scripts\\activate     # For Windows
    $env:FLASK_APP = "project.app"
    flask run
- 
+
+2. **Seed database**
+   From Soen342-Project directory:
+   python -m project.seed
 ### Visit the app at http://127.0.0.1:5000/ in your browser.

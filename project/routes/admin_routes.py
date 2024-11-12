@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from ..models import User, db, Offering, LessonType, Location, City
-from ..forms import LessonTypeForm, OfferingForm  # You'll need to create this form
+from ..models import Lesson, User, db, LessonType, Location, City
+from ..forms import LessonForm, LessonTypeForm  # You'll need to create this form
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -14,31 +14,15 @@ def require_admin():
 
 @admin_bp.route('/dashboard')
 def dashboard():
-    offerings = Offering.query.all()
+    lessons = Lesson.query.all()
     users = User.query.all()
-    return render_template('admin/dashboard.html', offerings=offerings, users=users)
+    return render_template('admin/dashboard.html', lessons=lessons, users=users)
 
 @admin_bp.route('/create_lesson', methods=['GET', 'POST'])
 def create_lesson():
     form = LessonForm()
     if form.validate_on_submit():
         new_lesson = Lesson(
-            lesson_type_id=form.lesson_type.data,
-            description=form.description.data,
-            status='pending_instructor'
-        )
-        db.session.add(new_lesson)
-        db.session.commit()
-        flash('Lesson created successfully.')
-        return redirect(url_for('admin.dashboard'))
-    return render_template('admin/create_lesson.html', form=form)
-
-@admin_bp.route('/create_offering', methods=['GET', 'POST'])
-def create_offering():
-    form = OfferingForm()
-    if form.validate_on_submit():
-        # Create new offering
-        new_offering = Offering(
             lesson_type_id=form.lesson_type.data,
             location_id=form.location.data,
             mode=form.mode.data,
@@ -50,11 +34,11 @@ def create_offering():
             end_time=form.end_time.data,
             status='pending_instructor'
         )
-        db.session.add(new_offering)
+        db.session.add(new_lesson)
         db.session.commit()
-        flash('Offering created successfully.')
+        flash('Lesson created successfully.')
         return redirect(url_for('admin.dashboard'))
-    return render_template('admin/create_offering.html', form=form)
+    return render_template('admin/create_lesson.html', form=form)
 
 @admin_bp.route('/lesson_types', methods=['GET', 'POST'])
 def manage_lesson_types():

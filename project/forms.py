@@ -58,59 +58,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
-# class OfferingForm(FlaskForm):
-#     lesson_type = SelectField('Lesson Type', coerce=int, validators=[DataRequired()])
-#     location = SelectField('Location', coerce=int, validators=[DataRequired()])
-#     mode = SelectField('Mode', choices=[('group', 'Group'), ('private', 'Private')], validators=[DataRequired()])
-#     capacity = IntegerField('Capacity', validators=[DataRequired()])
-#     start_date = DateField('Start Date', validators=[DataRequired()])
-#     end_date = DateField('End Date', validators=[DataRequired()])
-#     day_of_week = SelectField('Day of Week', choices=[('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')], validators=[DataRequired()])
-#     start_time = TimeField('Start Time', validators=[DataRequired()])
-#     end_time = TimeField('End Time', validators=[DataRequired()])
-#     submit = SubmitField('Create Offering')
-
-#     def __init__(self, *args, **kwargs):
-#         super(OfferingForm, self).__init__(*args, **kwargs)
-#         self.lesson_type.choices = [(lt.id, lt.name) for lt in LessonType.query.all()]
-#         self.location.choices = [(loc.id, loc.name) for loc in Location.query.all()]
-
-#     def validate(self, **kwargs):
-#         rv = super(OfferingForm, self).validate(**kwargs)
-#         if not rv:
-#             return False
-
-#         if self.start_date.data > self.end_date.data:
-#             self.end_date.errors.append('End date must be after start date.')
-#             return False
-
-#         if self.start_time.data >= self.end_time.data:
-#             self.end_time.errors.append('End time must be after start time.')
-#             return False
-
-#         return True
-    
-class OfferingForm(FlaskForm):
-    location = SelectField('Location', coerce=int, validators=[DataRequired()])
-    mode = SelectField('Mode', choices=[('group', 'Group'), ('private', 'Private')], validators=[DataRequired()])
-    capacity = IntegerField('Capacity', validators=[DataRequired()])
-    start_date = DateField('Start Date', validators=[DataRequired()])
-    end_date = DateField('End Date', validators=[DataRequired()])
-    day_of_week = SelectField('Day of Week', choices=[
-        ('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'),
-        ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')
-    ], validators=[DataRequired()])
-    start_time = TimeField('Start Time', validators=[DataRequired()])
-    end_time = TimeField('End Time', validators=[DataRequired()])
-    submit = SubmitField('Create Offering')
-
-    def __init__(self, *args, **kwargs):
-        super(OfferingForm, self).__init__(*args, **kwargs)
-        self.location.choices = [(loc.id, f"{loc.name} ({loc.city.name})") for loc in Location.query.all()]
-
 class BookingForm(FlaskForm):
-    client_id = SelectField('Select Client', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Book Session')
+    submit = SubmitField('Book Lesson')
 
 class DependentForm(FlaskForm):
     name = StringField('Dependent Name', validators=[DataRequired(), Length(1, 120)])
@@ -123,9 +72,21 @@ class LessonTypeForm(FlaskForm):
 
 class LessonForm(FlaskForm):
     lesson_type = SelectField('Lesson Type', coerce=int, validators=[DataRequired()])
-    description = StringField('Description', validators=[Optional(), Length(max=500)])
+    location = SelectField('Location', coerce=int, validators=[DataRequired()])
+    mode = SelectField('Mode', choices=[('group', 'Group'), ('private', 'Private')], validators=[DataRequired()])
+    capacity = IntegerField('Capacity', validators=[DataRequired()])
+    start_date = DateField('Start Date', validators=[DataRequired()])
+    end_date = DateField('End Date', validators=[DataRequired()])
+    day_of_week = SelectField('Day of Week', choices=[
+        ('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')
+    ], validators=[DataRequired()])
+    start_time = TimeField('Start Time', validators=[DataRequired()])
+    end_time = TimeField('End Time', validators=[DataRequired()])
     submit = SubmitField('Create Lesson')
 
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
         self.lesson_type.choices = [(lt.id, lt.name) for lt in LessonType.query.all()]
+        self.location.choices = [(loc.id, f"{loc.name} ({loc.city.name})") for loc in Location.query.all()]
+

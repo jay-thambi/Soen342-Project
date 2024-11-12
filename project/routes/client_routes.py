@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from ..models import db, Offering, Booking, Session, Client
+from ..models import Lesson, db, Booking, Session, Client
 from ..forms import BookingForm, DependentForm
 
 client_bp = Blueprint('client', __name__)
@@ -23,30 +23,53 @@ def dashboard():
         bookings.extend(Booking.query.filter_by(client_id=client.id).all())
     return render_template('client/dashboard.html', bookings=bookings, clients=client_profiles)
 
-@client_bp.route('/offerings')
-def view_offerings():
-    offerings = Offering.query.filter_by(status='available').all()
-    return render_template('client/offerings.html', offerings=offerings)
+@client_bp.route('/lessons')
+@login_required
+def view_lessons():
+    lessons = Lesson.query.filter_by(status='active').all()
+    return render_template('client/lessons.html', lessons=lessons)
 
-@client_bp.route('/book/<int:offering_id>', methods=['GET', 'POST'])
-def book_offering(offering_id):
-    offering = Offering.query.get_or_404(offering_id)
-    client = Client.query.filter_by(user_id=current_user.id).first()
-    # Check if already booked
-    existing_booking = Booking.query.filter_by(client_id=client.id, offering_id=offering.id).first()
-    if existing_booking:
-        flash('You have already booked this offering.')
-        return redirect(url_for('client.dashboard'))
-    # Create booking
-    new_booking = Booking(
-        client_id=client.id,
-        offering_id=offering.id,
-        status='active'
-    )
-    db.session.add(new_booking)
-    db.session.commit()
-    flash('Booking successful.')
-    return redirect(url_for('client.dashboard'))
+@client_bp.route('/book_lesson/<int:lesson_id>', methods=['GET', 'POST'])
+@login_required
+def book_lesson(lesson_id):
+    lesson = Lesson.query.get_or_404(lesson_id)
+    form = BookingForm()
+    if form.validate_on_submit():
+        new_booking = Booking(
+            lesson_id=lesson.id,
+            client_id=current_user.client_profile.id,
+            status='active'
+        )
+        db.session.add(new_booking)
+        db.session.commit()
+        flash('You have successfully booked the lesson.')
+        return redirect(url_for('client.view_lessons'))
+    return render_template('client/book_lesson.html', form=form, lesson=lesson)
+
+# @client_bp.route('/offerings')
+# def view_offerings():
+#     offerings = Offering.query.filter_by(status='available').all()
+#     return render_template('client/offerings.html', offerings=offerings)
+
+# @client_bp.route('/book/<int:offering_id>', methods=['GET', 'POST'])
+# def book_offering(offering_id):
+#     offering = Offering.query.get_or_404(offering_id)
+#     client = Client.query.filter_by(user_id=current_user.id).first()
+#     # Check if already booked
+#     existing_booking = Booking.query.filter_by(client_id=client.id, offering_id=offering.id).first()
+#     if existing_booking:
+#         flash('You have already booked this offering.')
+#         return redirect(url_for('client.dashboard'))
+#     # Create booking
+#     new_booking = Booking(
+#         client_id=client.id,
+#         offering_id=offering.id,
+#         status='active'
+#     )
+#     db.session.add(new_booking)
+#     db.session.commit()
+#     flash('Booking successful.')
+#     return redirect(url_for('client.dashboard'))
 
 @client_bp.route('/book/<int:session_id>', methods=['GET', 'POST'])
 def book_session(session_id):

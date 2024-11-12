@@ -1,19 +1,17 @@
-<!-- templates/instructor/available_lessons.html -->
+<!-- templates/client/lessons.html -->
 {% extends 'base.html' %}
 
-{% block title %}Available Lessons{% endblock %}
+{% block title %}Available Offerings{% endblock %}
 
 {% block content %}
-<h2>Available Lessons</h2>
+<h2>Available Offerings</h2>
 {% for lesson in lessons %}
     <div>
         <h3>{{ lesson.lesson_type.name }} at {{ lesson.location.name }}</h3>
+        <p>Instructor: {{ lesson.assigned_instructor.user.name }}</p>
         <p>{{ lesson.mode }} class</p>
         <p>Schedule: {{ lesson.day_of_week }} from {{ lesson.start_time }} to {{ lesson.end_time }}</p>
-        <form method="post" action="{{ url_for('instructor.take_lesson', lesson_id=lesson.id) }}">
-            {{ form.hidden_tag() }}
-            <button type="submit">Take on this Lesson</button>
-        </form>
+        <a href="{{ url_for('client.book_lesson', lesson_id=lesson.id) }}">Book Lesson</a>
     </div>
 {% endfor %}
 {% endblock %}

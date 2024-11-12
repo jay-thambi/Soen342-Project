@@ -8,17 +8,16 @@ db = SQLAlchemy()
 class Booking(db.Model):
     __tablename__ = 'bookings'
     id = db.Column(db.Integer, primary_key=True)
-    offering_id = db.Column(db.Integer, db.ForeignKey('offerings.id', name='fk_booking_offering'), nullable=False)
-    client_id = db.Column(db.Integer, db.ForeignKey('clients.id', name='fk_booking_client'), nullable=False)
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id', name='fk_booking_session'), nullable=False)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.id', name='fk_booking_client'), nullable=False)
     status = db.Column(db.String(20), nullable=False)  # 'active', 'cancelled'
 
     # Relationships
-    offering = db.relationship('Offering', backref='bookings') # many-to-one (Booking -> Offering)
-    client = db.relationship('Client', backref='bookings') # many-to-one (Booking -> Client)
+    session = db.relationship('Session', back_populates='bookings')  # many-to-one
+    client = db.relationship('Client', backref='bookings')  # many-to-one
 
     def __repr__(self):
-        return f"<Booking for Offering {self.offering_id} by Client {self.client_id}>"
+        return f"<Booking for Session {self.session_id} by Client {self.client_id}>"
 
 #! CITY
 class City(db.Model):
@@ -47,9 +46,9 @@ class Instructor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # Relationships
-    specializations = db.relationship('LessonType', secondary='instructor_specializations', backref='instructors') # many-to-many
-    availability_cities = db.relationship('City', secondary='instructor_cities', backref='instructors') # many-to-many
-    offerings = db.relationship('Offering', back_populates='assigned_instructor', lazy=True) # one-to-many
+    specializations = db.relationship('LessonType', secondary='instructor_specializations', backref='instructors')  # many-to-many
+    availability_cities = db.relationship('City', secondary='instructor_cities', backref='instructors')  # many-to-many
+    lessons = db.relationship('Lesson', back_populates='assigned_instructor', lazy=True)  # one-to-many
 
     def __repr__(self):
         return f"<Instructor {self.user.name}>"
@@ -59,15 +58,25 @@ class Lesson(db.Model):
     __tablename__ = 'lessons'
     id = db.Column(db.Integer, primary_key=True)
     lesson_type_id = db.Column(db.Integer, db.ForeignKey('lesson_types.id'), nullable=False)
-    description = db.Column(db.Text, nullable=True)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
+    mode = db.Column(db.String(20), nullable=False)  # 'group' or 'private'
+    capacity = db.Column(db.Integer, nullable=False, default=1)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    day_of_week = db.Column(db.String(10), nullable=False)  # e.g., 'Sunday'
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
+    instructor_id = db.Column(db.Integer, db.ForeignKey('instructors.id'), nullable=True)
     status = db.Column(db.String(20), nullable=False, default='pending_instructor')  # 'pending_instructor', 'active', 'archived'
 
     # Relationships
+    sessions = db.relationship('Session', back_populates='lesson', lazy=True)
     lesson_type = db.relationship('LessonType', back_populates='lessons', lazy=True)
-    offerings = db.relationship('Offering', back_populates='lesson', lazy=True)
+    location = db.relationship('Location', back_populates='lessons', lazy=True)
+    assigned_instructor = db.relationship('Instructor', back_populates='lessons', lazy=True)
 
     def __repr__(self):
-        return f"<Lesson {self.lesson_type.name}>"
+        return f"<Lesson {self.lesson_type.name} at {self.location.name}>"
 
 #! LESSON TYPE
 class LessonType(db.Model):
@@ -75,7 +84,7 @@ class LessonType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     # Relationships
-    lessons = db.relationship('Lesson', back_populates='lesson_type', lazy=True) # one-to-many
+    lessons = db.relationship('Lesson', back_populates='lesson_type', lazy=True)  # one-to-many
 
 #! LOCATION
 class Location(db.Model):
@@ -85,51 +94,24 @@ class Location(db.Model):
     address = db.Column(db.String(150), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
     # Relationships
-    offerings = db.relationship('Offering', back_populates='location', lazy=True)
+    lessons = db.relationship('Lesson', back_populates='location', lazy=True)  # one-to-many
 
     def __repr__(self):
         city_name = self.city.name if self.city else "Unknown City"
         return f"<Location {self.name} in {city_name}>"
 
-#! OFFERING
-class Offering(db.Model):
-    __tablename__ = 'offerings'
-    id = db.Column(db.Integer, primary_key=True)
-    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id'), nullable=False)
-    instructor_id = db.Column(db.Integer, db.ForeignKey('instructors.id'), nullable=False) # an offering must have an instructor
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
-    mode = db.Column(db.String(20), nullable=False)  # 'group' or 'private'
-    capacity = db.Column(db.Integer, nullable=False, default=1)
-    start_date = db.Column(db.Date, nullable=False)
-    end_date = db.Column(db.Date, nullable=False)
-    day_of_week = db.Column(db.String(10), nullable=False)  # e.g., 'Sunday'
-    start_time = db.Column(db.Time, nullable=False)
-    end_time = db.Column(db.Time, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='active')  # 'active', 'closed'
-    # Relationships
-    lesson = db.relationship('Lesson', back_populates='offerings') # many-to-one
-    sessions = db.relationship('Session', backref='offering', lazy=True) # one-to-many
-    location = db.relationship('Location', back_populates='offerings') # many-to-one
-    assigned_instructor = db.relationship('Instructor', back_populates='offerings') # many-to-one
-
-    def __repr__(self):
-        lesson_type_name = (
-            self.lesson.lesson_type.name if self.lesson and self.lesson.lesson_type else "Unknown Lesson Type"
-        )
-        location_name = self.location.name if self.location else "Unknown Location"
-        return f"<Offering {lesson_type_name} at {location_name}>"
-
 #! SESSION
 class Session(db.Model):
     __tablename__ = 'sessions'
     id = db.Column(db.Integer, primary_key=True)
-    offering_id = db.Column(db.Integer, db.ForeignKey('offerings.id'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id', name='fk_session_lesson'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     # Relationships
-    bookings = db.relationship('Booking', backref='session')
+    bookings = db.relationship('Booking', back_populates='session', lazy=True)
+    lesson = db.relationship('Lesson', back_populates='sessions', lazy=True)
 
 #! USER
 class User(db.Model, UserMixin):
