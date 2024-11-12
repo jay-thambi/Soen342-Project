@@ -79,7 +79,7 @@ def book_session(session_id):
         # Check capacity
         if len(session.bookings) >= session.capacity:
             flash('This session is fully booked.')
-            return redirect(url_for('client.view_offerings'))
+            return redirect(url_for('client.view_lessons'))
 
         # Select client profile (if multiple exist)
         client_id = form.client_id.data

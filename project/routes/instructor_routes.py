@@ -18,7 +18,7 @@ def dashboard():
     if not instructor:
         flash('Instructor profile not found.')
         return redirect(url_for('auth.login'))
-    offerings = Offering.query.filter_by(instructor_id=instructor.id).all()
+    offerings = Lesson.query.filter_by(instructor_id=instructor.id).all()
     return render_template('instructor/dashboard.html', offerings=offerings)
 
 @instructor_bp.route('/available_lessons')

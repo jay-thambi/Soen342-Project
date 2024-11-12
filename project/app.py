@@ -4,9 +4,12 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from .config import Config
 from .models import db, User
+from flask_wtf import CSRFProtect
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+csrf = CSRFProtect(app)
 
 db.init_app(app)
 migrate = Migrate(app, db)

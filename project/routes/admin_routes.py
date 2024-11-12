@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from ..models import Client, Instructor, Lesson, User, db, LessonType, Location, City
-from ..forms import CityForm, LessonForm, LessonTypeForm, LocationForm  # You'll need to create this form
+from ..forms import CityForm, LessonForm, LessonTypeForm, LocationForm
+from flask_wtf.csrf import generate_csrf
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -20,12 +21,14 @@ def dashboard():
     users_count = User.query.count()
     instructors_count = Instructor.query.count()
     clients_count = Client.query.count()
+    admins_count = User.query.filter_by(role='admin').count()
     return render_template('admin/dashboard.html',
                            pending_lessons=pending_lessons,
                            active_lessons=active_lessons,
                            users_count=users_count,
                            instructors_count=instructors_count,
-                           clients_count=clients_count)
+                           clients_count=clients_count,
+                           admins_count=admins_count)
 
 @admin_bp.route('/create_lesson', methods=['GET', 'POST'])
 @login_required
@@ -97,7 +100,8 @@ def manage_locations():
 @login_required
 def manage_users():
     users = User.query.order_by('name').all()
-    return render_template('admin/users.html', users=users)
+    csrf_token = generate_csrf() 
+    return render_template('admin/users.html', users=users, csrf_token=csrf_token)
 
 @admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])
 @login_required

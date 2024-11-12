@@ -8,19 +8,45 @@
     <p>Total Users: {{ users_count }}</p>
     <p>Total Instructors: {{ instructors_count }}</p>
     <p>Total Clients: {{ clients_count }}</p>
+    <p>Total Admins: {{ admins_count }}</p>
 </div>
+
+<!-- Management Links -->
+<h3>Management</h3>
+<ul>
+    <li><a href="{{ url_for('admin.manage_lesson_types') }}">Manage Lesson Types</a></li>
+    <li><a href="{{ url_for('admin.manage_cities') }}">Manage Cities</a></li>
+    <li><a href="{{ url_for('admin.manage_locations') }}">Manage Locations</a></li>
+    <li><a href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
+    <li><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></li>
+</ul>
 
 <h3>Pending Lessons</h3>
 <ul>
     {% for lesson in pending_lessons %}
-        <li>{{ lesson.lesson_type.name }} at {{ lesson.location.name }} starting on {{ lesson.start_date }}</li>
+        <li>
+            <strong>{{ lesson.lesson_type.name }}</strong> at <strong>{{ lesson.location.name }}</strong><br>
+            Mode: {{ lesson.mode }}<br>
+            Start Date: {{ lesson.start_date }}<br>
+            End Date: {{ lesson.end_date }}<br>
+            Day of Week: {{ lesson.day_of_week }}<br>
+            Time: {{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}
+        </li>
     {% endfor %}
 </ul>
 
 <h3>Active Lessons</h3>
 <ul>
     {% for lesson in active_lessons %}
-        <li>{{ lesson.lesson_type.name }} at {{ lesson.location.name }} with {{ lesson.assigned_instructor.user.name }}</li>
+        <li>
+            <strong>{{ lesson.lesson_type.name }}</strong> at <strong>{{ lesson.location.name }}</strong><br>
+            Instructor: {{ lesson.assigned_instructor.user.name }}<br>
+            Mode: {{ lesson.mode }}<br>
+            Start Date: {{ lesson.start_date }}<br>
+            End Date: {{ lesson.end_date }}<br>
+            Day of Week: {{ lesson.day_of_week }}<br>
+            Time: {{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}
+        </li>
     {% endfor %}
 </ul>
 {% endblock %}

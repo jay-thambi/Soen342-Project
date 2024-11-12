@@ -12,13 +12,17 @@
             Hello, {{ current_user.name }}!
             {% if current_user.role == 'client' %}
                 | <a href="{{ url_for('client.dashboard') }}">Dashboard</a>
-                | <a href="{{ url_for('client.view_offerings') }}">Offerings</a>
+                | <a href="{{ url_for('client.view_lessons') }}">Offerings</a>
             {% elif current_user.role == 'instructor' %}
                 | <a href="{{ url_for('instructor.dashboard') }}">Dashboard</a>
                 | <a href="{{ url_for('instructor.available_lessons') }}">Available Lessons</a>
             {% elif current_user.role == 'admin' %}
-                | <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                | <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
                 | <a href="{{ url_for('admin.create_lesson') }}">Create Lesson</a>
+                | <a href="{{ url_for('admin.manage_lesson_types') }}">Manage Lesson Types</a>
+                | <a href="{{ url_for('admin.manage_cities') }}">Manage Cities</a>
+                | <a href="{{ url_for('admin.manage_locations') }}">Manage Locations</a>
+                | <a href="{{ url_for('admin.manage_users') }}">Manage Users</a>
             {% endif %}
             | <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% else %}
