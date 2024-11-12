@@ -1,41 +1,26 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Administrator Dashboard{% endblock %}
 
 {% block content %}
-<h2>Welcome, {{ current_user.name }}!</h2>
+<h2>Dashboard</h2>
+<div>
+    <p>Total Users: {{ users_count }}</p>
+    <p>Total Instructors: {{ instructors_count }}</p>
+    <p>Total Clients: {{ clients_count }}</p>
+</div>
 
-<h3>Lessons</h3>
-<p><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></p>
-<table>
-    <tr>
-        <th>Lesson Type</th>
-        <th>Description</th>
-        <th>Status</th>
-    </tr>
-    {% for lesson in lessons %}
-    <tr>
-        <td>{{ lesson.lesson_type.name }}</td>
-        <td>{{ lesson.description }}</td>
-        <td>{{ lesson.status }}</td>
-    </tr>
+<h3>Pending Lessons</h3>
+<ul>
+    {% for lesson in pending_lessons %}
+        <li>{{ lesson.lesson_type.name }} at {{ lesson.location.name }} starting on {{ lesson.start_date }}</li>
     {% endfor %}
-</table>
+</ul>
 
-<h3>Users</h3>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-    </tr>
+<h3>Active Lessons</h3>
+<ul>
+    {% for lesson in active_lessons %}
+        <li>{{ lesson.lesson_type.name }} at {{ lesson.location.name }} with {{ lesson.assigned_instructor.user.name }}</li>
     {% endfor %}
-</table>
-
+</ul>
 {% endblock %}

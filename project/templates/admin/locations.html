@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Locations{% endblock %}
+
+{% block content %}
+<h2>Locations</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+        {% for error in form.name.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.address.label }}
+        {{ form.address(class="form-control") }}
+        {% for error in form.address.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.city.label }}
+        {{ form.city(class="form-control") }}
+        {% for error in form.city.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+
+<h3>Existing Locations</h3>
+<ul>
+    {% for loc in locations %}
+        <li>{{ loc.name }} - {{ loc.address }}, {{ loc.city.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

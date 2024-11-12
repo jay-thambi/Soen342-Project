@@ -1,4 +1,3 @@
-<!-- templates/admin/create_lesson.html -->
 {% extends 'base.html' %}
 
 {% block title %}Create Lesson{% endblock %}
@@ -8,26 +7,80 @@
 <form method="post">
     {{ form.hidden_tag() }}
 
-    {{ form.lesson_type.label }}<br>
-    {{ form.lesson_type() }}<br>
-    {% for error in form.lesson_type.errors %}
-        <span class="error">{{ error }}</span><br>
-    {% endfor %}
+    <div>
+        {{ form.lesson_type.label }}
+        {{ form.lesson_type(class="form-control") }}
+        {% for error in form.lesson_type.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
 
-    {{ form.location.label }}<br>
-    {{ form.location() }}<br>
-    {% for error in form.location.errors %}
-        <span class="error">{{ error }}</span><br>
-    {% endfor %}
+    <div>
+        {{ form.location.label }}
+        {{ form.location(class="form-control") }}
+        {% for error in form.location.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
 
-    {{ form.mode.label }}<br>
-    {{ form.mode() }}<br>
-    {% for error in form.mode.errors %}
-        <span class="error">{{ error }}</span><br>
-    {% endfor %}
+    <div>
+        {{ form.mode.label }}
+        {{ form.mode(class="form-control") }}
+        {% for error in form.mode.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
 
-    <!-- Add other form fields similarly -->
+    <div>
+        {{ form.capacity.label }}
+        {{ form.capacity(class="form-control") }}
+        {% for error in form.capacity.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
 
-    {{ form.submit() }}
+    <div>
+        {{ form.start_date.label }}
+        {{ form.start_date(class="form-control") }}
+        {% for error in form.start_date.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.end_date.label }}
+        {{ form.end_date(class="form-control") }}
+        {% for error in form.end_date.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.day_of_week.label }}
+        {{ form.day_of_week(class="form-control") }}
+        {% for error in form.day_of_week.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.start_time.label }}
+        {{ form.start_time(class="form-control") }}
+        {% for error in form.start_time.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.end_time.label }}
+        {{ form.end_time(class="form-control") }}
+        {% for error in form.end_time.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
 </form>
 {% endblock %}

@@ -66,9 +66,24 @@ class DependentForm(FlaskForm):
     date_of_birth = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField('Add Dependent')
 
+#! ADMIN FORMS
 class LessonTypeForm(FlaskForm):
-    name = StringField('Lesson Type Name', validators=[DataRequired(), Length(1, 120)])
+    name = StringField('Lesson Type Name', validators=[DataRequired(), Length(max=120)])
     submit = SubmitField('Add Lesson Type')
+
+class CityForm(FlaskForm):
+    name = StringField('City Name', validators=[DataRequired(), Length(max=120)])
+    submit = SubmitField('Add City')
+
+class LocationForm(FlaskForm):
+    name = StringField('Location Name', validators=[DataRequired(), Length(max=100)])
+    address = StringField('Address', validators=[DataRequired(), Length(max=150)])
+    city = SelectField('City', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add Location')
+
+    def __init__(self, *args, **kwargs):
+        super(LocationForm, self).__init__(*args, **kwargs)
+        self.city.choices = [(city.id, city.name) for city in City.query.order_by('name').all()]
 
 class LessonForm(FlaskForm):
     lesson_type = SelectField('Lesson Type', coerce=int, validators=[DataRequired()])
