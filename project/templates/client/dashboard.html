@@ -18,18 +18,16 @@
 {% if bookings %}
 <table>
     <tr>
-        <th>Client Name</th>
-        <th>Session Date</th>
         <th>Lesson Type</th>
         <th>Instructor</th>
+        <th>Location</th>
         <th>Status</th>
     </tr>
     {% for booking in bookings %}
     <tr>
-        <td>{{ booking.client.name }}</td>
-        <td>{{ booking.session.date }}</td>
-        <td>{{ booking.session.offering.lesson_type.name }}</td>
-        <td>{{ booking.session.offering.instructor.user.name if booking.session.offering.instructor else 'TBD' }}</td>
+        <td>{{ booking.offering.lesson.lesson_type.name }}</td>
+        <td>{{ booking.offering.instructor.user.name }}</td>
+        <td>{{ booking.offering.location.name }}</td>
         <td>{{ booking.status }}</td>
     </tr>
     {% endfor %}

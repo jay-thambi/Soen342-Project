@@ -1,0 +1,25 @@
+<!-- templates/admin/create_lesson.html -->
+{% extends 'base.html' %}
+
+{% block title %}Create Lesson{% endblock %}
+
+{% block content %}
+<h2>Create New Lesson</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+
+    {{ form.lesson_type.label }}<br>
+    {{ form.lesson_type() }}<br>
+    {% if form.lesson_type.errors %}
+        <span class="error">{{ form.lesson_type.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.description.label }}<br>
+    {{ form.description() }}<br>
+    {% if form.description.errors %}
+        <span class="error">{{ form.description.errors[0] }}</span><br>
+    {% endif %}
+
+    {{ form.submit() }}
+</form>
+{% endblock %}

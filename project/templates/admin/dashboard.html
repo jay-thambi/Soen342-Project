@@ -5,21 +5,19 @@
 {% block content %}
 <h2>Welcome, {{ current_user.name }}!</h2>
 
-<h3>Offerings</h3>
-<p><a href="{{ url_for('admin.create_offering') }}">Create New Offering</a></p>
+<h3>Lessons</h3>
+<p><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></p>
 <table>
     <tr>
         <th>Lesson Type</th>
-        <th>Location</th>
-        <th>Instructor</th>
+        <th>Description</th>
         <th>Status</th>
     </tr>
-    {% for offering in offerings %}
+    {% for lesson in lessons %}
     <tr>
-        <td>{{ offering.lesson_type.name }}</td>
-        <td>{{ offering.location.name }}</td>
-        <td>{{ offering.instructor.user.name if offering.instructor else 'Unassigned' }}</td>
-        <td>{{ offering.status }}</td>
+        <td>{{ lesson.lesson_type.name }}</td>
+        <td>{{ lesson.description }}</td>
+        <td>{{ lesson.status }}</td>
     </tr>
     {% endfor %}
 </table>

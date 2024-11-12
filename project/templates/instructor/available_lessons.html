@@ -1,0 +1,28 @@
+<!-- templates/instructor/available_lessons.html -->
+{% extends 'base.html' %}
+
+{% block title %}Available Lessons{% endblock %}
+
+{% block content %}
+<h2>Available Lessons</h2>
+{% if lessons %}
+<table>
+    <tr>
+        <th>Lesson Type</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+    {% for lesson in lessons %}
+    <tr>
+        <td>{{ lesson.lesson_type.name }}</td>
+        <td>{{ lesson.description }}</td>
+        <td>
+            <a href="{{ url_for('instructor.create_offering', lesson_id=lesson.id) }}">Create Offering</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No available lessons at this time.</p>
+{% endif %}
+{% endblock %}

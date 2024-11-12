@@ -18,6 +18,21 @@ def dashboard():
     users = User.query.all()
     return render_template('admin/dashboard.html', offerings=offerings, users=users)
 
+@admin_bp.route('/create_lesson', methods=['GET', 'POST'])
+def create_lesson():
+    form = LessonForm()
+    if form.validate_on_submit():
+        new_lesson = Lesson(
+            lesson_type_id=form.lesson_type.data,
+            description=form.description.data,
+            status='pending_instructor'
+        )
+        db.session.add(new_lesson)
+        db.session.commit()
+        flash('Lesson created successfully.')
+        return redirect(url_for('admin.dashboard'))
+    return render_template('admin/create_lesson.html', form=form)
+
 @admin_bp.route('/create_offering', methods=['GET', 'POST'])
 def create_offering():
     form = OfferingForm()
