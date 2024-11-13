@@ -107,6 +107,17 @@ def manage_users():
 @login_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
+
+        # Delete associated Client or Instructor
+    if user.role == 'client':
+        client = Client.query.filter_by(user_id=user_id).first()
+        if client:
+            db.session.delete(client)
+    elif user.role == 'instructor':
+        instructor = Instructor.query.filter_by(user_id=user_id).first()
+        if instructor:
+            db.session.delete(instructor)
+
     db.session.delete(user)
     db.session.commit()
     flash('User deleted successfully.')
