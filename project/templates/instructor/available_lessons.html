@@ -9,10 +9,10 @@
     <div>
         <h3>{{ lesson.lesson_type.name }} at {{ lesson.location.name }}</h3>
         <p>{{ lesson.mode }} class</p>
-        <p>Schedule: {{ lesson.day_of_week }} from {{ lesson.start_time }} to {{ lesson.end_time }}</p>
+        <p>Schedule: {{ lesson.day_of_week }} from {{ lesson.start_time.strftime('%H:%M') }} to {{ lesson.end_time.strftime('%H:%M') }}</p>
         <form method="post" action="{{ url_for('instructor.take_lesson', lesson_id=lesson.id) }}">
-            {{ form.hidden_tag() }}
-            <button type="submit">Take on this Lesson</button>
+            {{ forms[lesson.id].hidden_tag() }}
+            {{ forms[lesson.id].submit(class="btn btn-primary") }}
         </form>
     </div>
 {% endfor %}

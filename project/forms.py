@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Email, Length, Optional
 
 from .models import City, LessonType, Location
 
+#! AUTH FORMS
 class RegistrationForm(FlaskForm):
     # Common Fields
     role = RadioField('Role', choices=[('client', 'Client'), ('instructor', 'Instructor'), ('admin', 'Administrator')], validators=[DataRequired()])
@@ -58,6 +59,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+#! CLIENT FORMS
 class BookingForm(FlaskForm):
     submit = SubmitField('Book Lesson')
 
@@ -65,6 +67,10 @@ class DependentForm(FlaskForm):
     name = StringField('Dependent Name', validators=[DataRequired(), Length(1, 120)])
     date_of_birth = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField('Add Dependent')
+
+#! INSTUCTOR FORMS
+class TakeLessonForm(FlaskForm):
+    submit = SubmitField('Take on this Lesson')
 
 #! ADMIN FORMS
 class LessonTypeForm(FlaskForm):

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 
+from ..forms import TakeLessonForm
 from ..models import Lesson, Location, Session, db, Instructor
 
 instructor_bp = Blueprint('instructor', __name__)
@@ -30,7 +31,9 @@ def available_lessons():
         Lesson.lesson_type_id.in_([lt.id for lt in current_user.instructor_profile.specializations]),
         Lesson.location.has(Location.city_id.in_([city.id for city in current_user.instructor_profile.availability_cities]))
     ).all()
-    return render_template('instructor/available_lessons.html', lessons=lessons)
+    # Create a form instance for each lesson
+    forms = {lesson.id: TakeLessonForm() for lesson in lessons}
+    return render_template('instructor/available_lessons.html', lessons=lessons, forms=forms)
 
 @instructor_bp.route('/take_lesson/<int:lesson_id>', methods=['POST'])
 @login_required
