@@ -29,6 +29,9 @@
             <a href="{{ url_for('auth.login') }}">Login</a> | <a href="{{ url_for('auth.register') }}">Register</a>
         {% endif %}
     </nav>
+    <!-- get_flashed_messages() is a function from Flask -->
+    <!-- retrieves messages that have been flashed using 'flash()' in your routes -->
+    <!-- ex: flash('Logged in successfully.') in auth_routes -->
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class="flashes">

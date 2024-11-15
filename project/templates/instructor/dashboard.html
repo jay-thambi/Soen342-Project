@@ -5,6 +5,30 @@
 {% block content %}
 <h2>Welcome, {{ current_user.name }}!</h2>
 
+<!-- Display Instructor's Specializations -->
+<h3>Your Specializations</h3>
+{% if instructor.specializations %}
+<ul>
+    {% for specialization in instructor.specializations %}
+    <li>{{ specialization.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>You have no specializations assigned.</p>
+{% endif %}
+
+<!-- Display Instructor's Availability Cities -->
+<h3>Your Availability Cities</h3>
+{% if instructor.availability_cities %}
+<ul>
+    {% for city in instructor.availability_cities %}
+    <li>{{ city.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>You have no cities assigned for availability.</p>
+{% endif %}
+
 <h3>Your Offerings</h3>
 {% if offerings %}
 <table>
@@ -20,10 +44,9 @@
     <tr>
         <td>{{ offering.lesson_type.name }}</td>
         <td>{{ offering.location.name }}</td>
-        <td>{{ offering.instructor.user.name if offering.instructor else 'Unassigned' }}</td>
-        <!-- <td>{{ offering.mode }}</td> -->
-        <!-- <td>{{ offering.start_date }}</td> -->
-        <!-- <td>{{ offering.end_date }}</td> -->
+        <td>{{ offering.mode }}</td>
+        <td>{{ offering.start_date }}</td>
+        <td>{{ offering.end_date }}</td>
         <td>{{ offering.status }}</td>
     </tr>
     {% endfor %}
@@ -32,5 +55,5 @@
 <p>You have no accepted offerings yet.</p>
 {% endif %}
 
-<p><a href="{{ url_for('instructor.available_lessons') }}">View Available Offerings to Accept</a></p>
+<p><a href="{{ url_for('instructor.available_lessons') }}">View Available Lessons to Accept</a></p>
 {% endblock %}
