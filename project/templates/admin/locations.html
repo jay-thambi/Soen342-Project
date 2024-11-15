@@ -3,45 +3,56 @@
 {% block title %}Manage Locations{% endblock %}
 
 {% block content %}
-<h2>Locations</h2>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.name.label }}
-        {{ form.name(class="form-control") }}
-        {% for error in form.name.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div>
-        {{ form.address.label }}
-        {{ form.address(class="form-control") }}
-        {% for error in form.address.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div>
-        {{ form.city.label }}
-        {{ form.city(class="form-control") }}
-        {% for error in form.city.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div>
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
-</form>
-
-<h3>Existing Locations</h3>
-<ul>
-    {% for loc in locations %}
-        <li>
-            {{ loc.name }} - {{ loc.address }}, {{ loc.city.name }}
-            <form method="post" action="{{ url_for('admin.delete_location', location_id=loc.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this location?');">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+<div class="mt-4">
+    <h2 class="text-center">Manage Locations</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="mb-4">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.address.label(class="form-label") }}
+                    {{ form.address(class="form-control") }}
+                    {% for error in form.address.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.city.label(class="form-label") }}
+                    {{ form.city(class="form-control") }}
+                    {% for error in form.city.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">{{ form.submit.label.text }}</button>
             </form>
-        </li>
-    {% endfor %}
-</ul>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Existing Locations</h3>
+    {% if locations %}
+    <ul class="list-group">
+        {% for loc in locations %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ loc.name }}</strong><br>
+                    {{ loc.address }}, {{ loc.city.name }}
+                </div>
+                <form method="post" action="{{ url_for('admin.delete_location', location_id=loc.id) }}" onsubmit="return confirm('Are you sure you want to delete this location?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-info">No locations available.</div>
+    {% endif %}
+</div>
 {% endblock %}

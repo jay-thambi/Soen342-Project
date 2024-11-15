@@ -1,88 +1,100 @@
 {% extends 'base.html' %}
-
 {% block title %}Create Lesson{% endblock %}
-
 {% block content %}
-<h2>Create New Lesson</h2>
-<form method="post">
-    {{ form.hidden_tag() }}
-
-    <div>
-        {{ form.lesson_type.label }}
-        {{ form.lesson_type(class="form-control") }}
-        {% for error in form.lesson_type.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
+<div class="mt-4">
+    <h2 class="text-center">Create New Lesson</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post">
+                {{ form.hidden_tag() }}
+    
+                <!-- Lesson Type -->
+                <div class="form-group">
+                    {{ form.lesson_type.label(class="form-label") }}
+                    {{ form.lesson_type(class="form-control") }}
+                    {% if form.lesson_type.errors %}
+                        <small class="text-danger">{{ form.lesson_type.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Location -->
+                <div class="form-group">
+                    {{ form.location.label(class="form-label") }}
+                    {{ form.location(class="form-control") }}
+                    {% if form.location.errors %}
+                        <small class="text-danger">{{ form.location.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Mode -->
+                <div class="form-group">
+                    {{ form.mode.label(class="form-label") }}
+                    {{ form.mode(class="form-control", id="mode") }}
+                    {% if form.mode.errors %}
+                        <small class="text-danger">{{ form.mode.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Capacity -->
+                <div class="form-group">
+                    {{ form.capacity.label(class="form-label") }}
+                    {{ form.capacity(class="form-control", id="capacity") }}
+                    {% if form.capacity.errors %}
+                        <small class="text-danger">{{ form.capacity.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Start Date -->
+                <div class="form-group">
+                    {{ form.start_date.label(class="form-label") }}
+                    {{ form.start_date(class="form-control") }}
+                    {% if form.start_date.errors %}
+                        <small class="text-danger">{{ form.start_date.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- End Date -->
+                <div class="form-group">
+                    {{ form.end_date.label(class="form-label") }}
+                    {{ form.end_date(class="form-control") }}
+                    {% if form.end_date.errors %}
+                        <small class="text-danger">{{ form.end_date.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Day of Week -->
+                <div class="form-group">
+                    {{ form.day_of_week.label(class="form-label") }}
+                    {{ form.day_of_week(class="form-control") }}
+                    {% if form.day_of_week.errors %}
+                        <small class="text-danger">{{ form.day_of_week.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Start Time -->
+                <div class="form-group">
+                    {{ form.start_time.label(class="form-label") }}
+                    {{ form.start_time(class="form-control") }}
+                    {% if form.start_time.errors %}
+                        <small class="text-danger">{{ form.start_time.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- End Time -->
+                <div class="form-group">
+                    {{ form.end_time.label(class="form-label") }}
+                    {{ form.end_time(class="form-control") }}
+                    {% if form.end_time.errors %}
+                        <small class="text-danger">{{ form.end_time.errors[0] }}</small>
+                    {% endif %}
+                </div>
+    
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block">{{ form.submit.label.text }}</button>
+            </form>
+        </div>
     </div>
-
-    <div>
-        {{ form.location.label }}
-        {{ form.location(class="form-control") }}
-        {% for error in form.location.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.mode.label }}
-        {{ form.mode(class="form-control") }}
-        {% for error in form.mode.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.capacity.label }}
-        {{ form.capacity(class="form-control", id="capacity") }}
-        {% for error in form.capacity.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.start_date.label }}
-        {{ form.start_date(class="form-control") }}
-        {% for error in form.start_date.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.end_date.label }}
-        {{ form.end_date(class="form-control") }}
-        {% for error in form.end_date.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.day_of_week.label }}
-        {{ form.day_of_week(class="form-control") }}
-        {% for error in form.day_of_week.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.start_time.label }}
-        {{ form.start_time(class="form-control") }}
-        {% for error in form.start_time.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.end_time.label }}
-        {{ form.end_time(class="form-control") }}
-        {% for error in form.end_time.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
-</form>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

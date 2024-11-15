@@ -3,31 +3,39 @@
 {% block title %}Manage Cities{% endblock %}
 
 {% block content %}
-<h2>Cities</h2>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.name.label }}
-        {{ form.name(class="form-control") }}
-        {% for error in form.name.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div>
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
-</form>
-
-<h3>Existing Cities</h3>
-<ul>
-    {% for city in cities %}
-        <li>
-            {{ city.name }}
-            <form method="post" action="{{ url_for('admin.delete_city', city_id=city.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this city?');">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+<div class="mt-4">
+    <h2 class="text-center">Manage Cities</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="mb-4">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">{{ form.submit.label.text }}</button>
             </form>
-        </li>
-    {% endfor %}
-</ul>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Existing Cities</h3>
+    {% if cities %}
+    <ul class="list-group">
+        {% for city in cities %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ city.name }}
+                <form method="post" action="{{ url_for('admin.delete_city', city_id=city.id) }}" onsubmit="return confirm('Are you sure you want to delete this city?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-info">No cities available.</div>
+    {% endif %}
+</div>
 {% endblock %}

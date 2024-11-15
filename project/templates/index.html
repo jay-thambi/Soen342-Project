@@ -1,12 +1,17 @@
-<!-- index.html -->
 {% extends 'base.html' %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Welcome to Your App</h1>
-<p>
-  <a href="{{ url_for('auth.login') }}">Login</a> |
-  <a href="{{ url_for('auth.register') }}">Register</a>
-</p>
+<div class="jumbotron mt-4">
+    <h1 class="display-4">SOEN 342 Project</h1>
+    <h2 class="lead">Sanjay Thambithurai - 40184405</h2>
+    <h2 class="lead">Alexander Kepekci - 40113003</h2>
+    <hr class="my-4">
+    <p>Please log in or register to continue.</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg mr-2" href="{{ url_for('auth.login') }}" role="button">Login</a>
+        <a class="btn btn-success btn-lg" href="{{ url_for('auth.register') }}" role="button">Register</a>
+    </p>
+</div>
 {% endblock %}

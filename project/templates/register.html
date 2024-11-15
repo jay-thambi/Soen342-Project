@@ -4,68 +4,105 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="post">
-    {{ form.hidden_tag() }}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <h2 class="text-center">Register</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
 
-    <!-- Display form-level errors -->
-    {% if form.errors %}
-        <ul class="errors">
-        {% for field_errors in form.errors.values() %}
-            {% for error in field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-        </ul>
-    {% endif %}
+            <!-- Display form-level errors -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        {% for field_errors in form.errors.values() %}
+                            {% for error in field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-    <!-- Role Selection -->
-    {{ form.role.label }}<br>
-    {% for subfield in form.role %}
-        {{ subfield }} {{ subfield.label }}<br>
-    {% endfor %}
-    {% if form.role.errors %}
-        <span class="error">{{ form.role.errors[0] }}</span><br>
-    {% endif %}
+            <!-- Role Selection -->
+            <div class="form-group">
+                {{ form.role.label(class="form-label") }}
+                {% for subfield in form.role %}
+                    <div class="form-check form-check-inline">
+                        {{ subfield(class="form-check-input") }}
+                        {{ subfield.label(class="form-check-label") }}
+                    </div>
+                {% endfor %}
+                {% if form.role.errors %}
+                    <small class="text-danger">{{ form.role.errors[0] }}</small>
+                {% endif %}
+            </div>
 
-    <!-- Common Fields -->
-    {{ form.name.label }} {{ form.name() }}<br>
-    {% if form.name.errors %}
-        <span class="error">{{ form.name.errors[0] }}</span><br>
-    {% endif %}
+            <!-- Common Fields -->
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", placeholder="Enter your name") }}
+                {% if form.name.errors %}
+                    <small class="text-danger">{{ form.name.errors[0] }}</small>
+                {% endif %}
+            </div>
 
-    {{ form.email.label }} {{ form.email() }}<br>
-    {% if form.email.errors %}
-        <span class="error">{{ form.email.errors[0] }}</span><br>
-    {% endif %}
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                {% if form.email.errors %}
+                    <small class="text-danger">{{ form.email.errors[0] }}</small>
+                {% endif %}
+            </div>
 
-    {{ form.password.label }} {{ form.password() }}<br>
-    {% if form.password.errors %}
-        <span class="error">{{ form.password.errors[0] }}</span><br>
-    {% endif %}
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter a password") }}
+                {% if form.password.errors %}
+                    <small class="text-danger">{{ form.password.errors[0] }}</small>
+                {% endif %}
+            </div>
 
-    {{ form.phone_number.label }} {{ form.phone_number() }}<br>
-    {% if form.phone_number.errors %}
-        <span class="error">{{ form.phone_number.errors[0] }}</span><br>
-    {% endif %}
+            <div class="form-group">
+                {{ form.phone_number.label(class="form-label") }}
+                {{ form.phone_number(class="form-control", placeholder="Enter your phone number") }}
+                {% if form.phone_number.errors %}
+                    <small class="text-danger">{{ form.phone_number.errors[0] }}</small>
+                {% endif %}
+            </div>
 
-    <!-- Client-Specific Fields -->
-    <div id="client_fields" style="display:none;">
-        {{ form.date_of_birth.label }} {{ form.date_of_birth() }}<br>
-        {% if form.date_of_birth.errors %}
-            <span class="error">{{ form.date_of_birth.errors[0] }}</span><br>
-        {% endif %}
+            <!-- Client-Specific Fields -->
+            <div id="client_fields" style="display:none;">
+                <div class="form-group">
+                    {{ form.date_of_birth.label(class="form-label") }}
+                    {{ form.date_of_birth(class="form-control") }}
+                    {% if form.date_of_birth.errors %}
+                        <small class="text-danger">{{ form.date_of_birth.errors[0] }}</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Instructor-Specific Fields -->
+            <div id="instructor_fields" style="display:none;">
+                <div class="form-group">
+                    {{ form.specializations.label(class="form-label") }}
+                    {{ form.specializations(class="form-control", size=5) }}
+                    {% if form.specializations.errors %}
+                        <small class="text-danger">{{ form.specializations.errors[0] }}</small>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.availability_cities.label(class="form-label") }}
+                    {{ form.availability_cities(class="form-control", size=5) }}
+                    {% if form.availability_cities.errors %}
+                        <small class="text-danger">{{ form.availability_cities.errors[0] }}</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">{{ form.submit.label.text }}</button>
+        </form>
     </div>
-
-    <!-- Instructor-Specific Fields -->
-    <div id="instructor_fields" style="display:none;">
-        {{ form.specializations.label }}<br>
-        {{ form.specializations(size=5) }}<br>
-        {{ form.availability_cities(size=5) }}<br>
-    </div>
-
-    {{ form.submit() }}
-</form>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

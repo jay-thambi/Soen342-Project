@@ -1,22 +1,26 @@
-<!-- templates/client/book_session.html -->
 {% extends 'base.html' %}
 
 {% block title %}Book Session{% endblock %}
 
 {% block content %}
-<h2>Book Session</h2>
-<p>You are booking: {{ session.lesson.lesson_type.name }} on {{ session.date.strftime('%Y-%m-%d') }}</p>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.client_id.label }}
-        {{ form.client_id(class="form-control") }}
-        {% for error in form.client_id.errors %}
-            <span class="error">{{ error }}</span>
-        {% endfor %}
+<div class="mt-4">
+    <h2 class="text-center">Book Session</h2>
+    <p class="text-center">You are booking: <strong>{{ session.lesson.lesson_type.name }}</strong> on <strong>{{ session.date.strftime('%B %d, %Y') }}</strong></p>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <form method="post">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.client_id.label(class="form-label") }}
+                    {{ form.client_id(class="form-control") }}
+                    {% if form.client_id.errors %}
+                        <small class="text-danger">{{ form.client_id.errors[0] }}</small>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">{{ form.submit.label.text }}</button>
+            </form>
+            <a href="{{ url_for('client.sessions', lesson_id=session.lesson.id) }}" class="btn btn-secondary mt-3">Back to Sessions</a>
+        </div>
     </div>
-    <div>
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
-</form>
+</div>
 {% endblock %}

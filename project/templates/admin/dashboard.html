@@ -2,100 +2,119 @@
 
 {% block title %}Administrator Dashboard{% endblock %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<div>
-    <p>Total Users: {{ users_count }}</p>
-    <p>Total Instructors: {{ instructors_count }}</p>
-    <p>Total Clients: {{ clients_count }}</p>
-    <p>Total Admins: {{ admins_count }}</p>
+<div class="mt-4">
+    <h2 class="text-center">Admin Dashboard</h2>
+
+    <!-- Statistics Section -->
+    <div class="row text-center my-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Total Users</h5>
+                    <p class="display-4">{{ users_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Total Instructors</h5>
+                    <p class="display-4">{{ instructors_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Total Clients</h5>
+                    <p class="display-4">{{ clients_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Total Admins</h5>
+                    <p class="display-4">{{ admins_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Pending Lessons</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Lesson Type</th>
+                <th>Location</th>
+                <th>Mode</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Day of Week</th>
+                <th>Time</th>
+                <th>Capacity</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in pending_lessons %}
+            <tr>
+                <td>{{ lesson.lesson_type.name }}</td>
+                <td>{{ lesson.location.name }}</td>
+                <td>{{ lesson.mode|capitalize }}</td>
+                <td>{{ lesson.start_date.strftime('%B %d, %Y') }}</td>
+                <td>{{ lesson.end_date.strftime('%B %d, %Y') }}</td>
+                <td>{{ lesson.day_of_week }}</td>
+                <td>{{ lesson.start_time.strftime('%I:%M%p') }} - {{ lesson.end_time.strftime('%I:%M%p') }}</td>
+                <td>{{ lesson.capacity }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Active Lessons</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Lesson Type</th>
+                <th>Location</th>
+                <th>Instructor</th>
+                <th>Mode</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Day of Week</th>
+                <th>Time</th>
+                <th>Capacity</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in active_lessons %}
+            <tr>
+                <td>{{ lesson.lesson_type.name }}</td>
+                <td>{{ lesson.location.name }}</td>
+                <td>{{ lesson.assigned_instructor.user.name }}</td>
+                <td>{{ lesson.mode|capitalize }}</td>
+                <td>{{ lesson.start_date.strftime('%B %d, %Y') }}</td>
+                <td>{{ lesson.end_date.strftime('%B %d, %Y') }}</td>
+                <td>{{ lesson.day_of_week }}</td>
+                <td>{{ lesson.start_time.strftime('%I:%M%p') }} - {{ lesson.end_time.strftime('%I:%M%p') }}</td>
+                <td>{{ lesson.capacity }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-
-<!-- Management Links -->
-<h3>Management</h3>
-<ul>
-    <li><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></li>
-    <li><a href="{{ url_for('admin.manage_bookings') }}">Manage Bookings</a></li>
-    <li><a href="{{ url_for('admin.manage_lesson_types') }}">Manage Lesson Types</a></li>
-    <li><a href="{{ url_for('admin.manage_cities') }}">Manage Cities</a></li>
-    <li><a href="{{ url_for('admin.manage_locations') }}">Manage Locations</a></li>
-    <li><a href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
-</ul>
-
-<!-- Pending Lessons -->
-<h3>Pending Lessons</h3>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Lesson Type</th>
-            <th>Location</th>
-            <th>Mode</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Day of Week</th>
-            <th>Time</th>
-            <th>Capacity</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for lesson in pending_lessons %}
-        <tr>
-            <td>{{ lesson.lesson_type.name }}</td>
-            <td>{{ lesson.location.name }}</td>
-            <td>{{ lesson.mode }}</td>
-            <td>{{ lesson.start_date }}</td>
-            <td>{{ lesson.end_date }}</td>
-            <td>{{ lesson.day_of_week }}</td>
-            <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
-            <td>{{ lesson.capacity }}</td>
-            <td>
-                <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Active Lessons -->
-<h3>Active Lessons</h3>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Lesson Type</th>
-            <th>Location</th>
-            <th>Instructor</th>
-            <th>Mode</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Day of Week</th>
-            <th>Time</th>
-            <th>Capacity</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for lesson in active_lessons %}
-        <tr>
-            <td>{{ lesson.lesson_type.name }}</td>
-            <td>{{ lesson.location.name }}</td>
-            <td>{{ lesson.assigned_instructor.user.name }}</td>
-            <td>{{ lesson.mode }}</td>
-            <td>{{ lesson.start_date }}</td>
-            <td>{{ lesson.end_date }}</td>
-            <td>{{ lesson.day_of_week }}</td>
-            <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
-            <td>{{ lesson.capacity }}</td>
-            <td>
-                <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 {% endblock %}

@@ -34,6 +34,7 @@ nav a:hover {
 h2 {
     margin-bottom: 20px;
     color: #343a40;
+    /* size: 15px; */
 }
 
 /* Forms */
@@ -161,3 +162,4 @@ a:hover {
 .hidden {
     display: none;
 }
+
