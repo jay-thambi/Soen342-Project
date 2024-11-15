@@ -46,31 +46,6 @@ def book_lesson(lesson_id):
         return redirect(url_for('client.view_lessons'))
     return render_template('client/book_lesson.html', form=form, lesson=lesson)
 
-# @client_bp.route('/offerings')
-# def view_offerings():
-#     offerings = Offering.query.filter_by(status='available').all()
-#     return render_template('client/offerings.html', offerings=offerings)
-
-# @client_bp.route('/book/<int:offering_id>', methods=['GET', 'POST'])
-# def book_offering(offering_id):
-#     offering = Offering.query.get_or_404(offering_id)
-#     client = Client.query.filter_by(user_id=current_user.id).first()
-#     # Check if already booked
-#     existing_booking = Booking.query.filter_by(client_id=client.id, offering_id=offering.id).first()
-#     if existing_booking:
-#         flash('You have already booked this offering.')
-#         return redirect(url_for('client.dashboard'))
-#     # Create booking
-#     new_booking = Booking(
-#         client_id=client.id,
-#         offering_id=offering.id,
-#         status='active'
-#     )
-#     db.session.add(new_booking)
-#     db.session.commit()
-#     flash('Booking successful.')
-#     return redirect(url_for('client.dashboard'))
-
 @client_bp.route('/book/<int:session_id>', methods=['GET', 'POST'])
 def book_session(session_id):
     form = BookingForm()
