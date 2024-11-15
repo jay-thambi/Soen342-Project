@@ -33,7 +33,7 @@
 
     <div>
         {{ form.capacity.label }}
-        {{ form.capacity(class="form-control") }}
+        {{ form.capacity(class="form-control", id="capacity") }}
         {% for error in form.capacity.errors %}
             <span class="error">{{ error }}</span>
         {% endfor %}
@@ -83,4 +83,23 @@
         {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modeField = document.getElementById('mode');
+        var capacityField = document.getElementById('capacity');
+
+        function toggleCapacityField() {
+            if (modeField.value === 'private') {
+                capacityField.value = 1;
+                capacityField.readOnly = true;
+            } else {
+                capacityField.readOnly = false;
+            }
+        }
+
+        modeField.addEventListener('change', toggleCapacityField);
+        toggleCapacityField(); // Initialize on page load
+    });
+</script>
 {% endblock %}

@@ -1,3 +1,4 @@
+from datetime import date
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SelectMultipleField, StringField, PasswordField, SubmitField, SelectField, DateField, TimeField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, Optional
@@ -39,6 +40,15 @@ class RegistrationForm(FlaskForm):
             if not self.date_of_birth.data:
                 self.date_of_birth.errors.append('Date of Birth is required for clients.')
                 return False
+            else:
+                # Check that the client is over 18
+                today = date.today()
+                dob = self.date_of_birth.data
+                age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+                if age < 18:
+                    self.date_of_birth.errors.append('You must be at least 18 years old to register as a client.')
+                    return False
+
         elif self.role.data == 'instructor':
             if not self.specializations.data:
                 self.specializations.errors.append('At least one specialization is required.')
