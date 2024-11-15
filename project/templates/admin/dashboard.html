@@ -14,11 +14,12 @@
 <!-- Management Links -->
 <h3>Management</h3>
 <ul>
+    <li><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></li>
+    <li><a href="{{ url_for('admin.manage_bookings') }}">Manage Bookings</a></li>
     <li><a href="{{ url_for('admin.manage_lesson_types') }}">Manage Lesson Types</a></li>
     <li><a href="{{ url_for('admin.manage_cities') }}">Manage Cities</a></li>
     <li><a href="{{ url_for('admin.manage_locations') }}">Manage Locations</a></li>
     <li><a href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
-    <li><a href="{{ url_for('admin.create_lesson') }}">Create New Lesson</a></li>
 </ul>
 
 <h3>Pending Lessons</h3>

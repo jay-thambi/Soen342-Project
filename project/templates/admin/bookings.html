@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Bookings{% endblock %}
+
+{% block content %}
+<h2>All Bookings</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Client</th>
+            <th>Session</th>
+            <th>Lesson</th>
+            <th>Instructor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.client.name }}</td>
+                <td>{{ booking.session.id }}</td>
+                <td>{{ booking.session.lesson.lesson_type.name }}</td>
+                <td>{{ booking.session.lesson.assigned_instructor.user.name if booking.session.lesson.assigned_instructor else 'Unassigned' }}</td>
+                <td>{{ booking.session.date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ booking.session.start_time.strftime('%H:%M') }} - {{ booking.session.end_time.strftime('%H:%M') }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('admin.delete_booking', booking_id=booking.id) }}" onsubmit="return confirm('Are you sure you want to delete this booking?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

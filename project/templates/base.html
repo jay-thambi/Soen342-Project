@@ -20,6 +20,7 @@
             {% elif current_user.role == 'admin' %}
                 | <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
                 | <a href="{{ url_for('admin.create_lesson') }}">Create Lesson</a>
+                | <a href="{{ url_for('admin.manage_bookings') }}">Manage Bookings</a>
                 | <a href="{{ url_for('admin.manage_lesson_types') }}">Manage Lesson Types</a>
                 | <a href="{{ url_for('admin.manage_cities') }}">Manage Cities</a>
                 | <a href="{{ url_for('admin.manage_locations') }}">Manage Locations</a>

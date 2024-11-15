@@ -25,6 +25,7 @@
         <th>Instructor</th>
         <th>Location</th>
         <th>Status</th>
+        <th></th>
     </tr>
     {% for booking in bookings %}
     <tr>
@@ -35,6 +36,12 @@
         <td>{{ booking.session.lesson.assigned_instructor.user.name }}</td>
         <td>{{ booking.session.lesson.location.name }}</td>
         <td>{{ booking.status }}</td>
+        <td>
+            <form method="post" action="{{ url_for('client.delete_booking', booking_id=booking.id) }}" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>

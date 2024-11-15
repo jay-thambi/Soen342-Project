@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from ..models import Lesson, db, Booking, Session, Client
 from ..forms import BookingForm, DependentForm
+from flask_wtf.csrf import generate_csrf
 
 client_bp = Blueprint('client', __name__)
 
@@ -15,6 +16,7 @@ def require_client():
 @client_bp.route('/dashboard')
 @login_required
 def dashboard():
+    csrf_token = generate_csrf() 
     client_profiles = Client.query.filter_by(user_id=current_user.id).all()
     if not client_profiles:
         flash('No client profiles found.')
@@ -23,7 +25,7 @@ def dashboard():
     for client in client_profiles:
         client_bookings = Booking.query.filter_by(client_id=client.id).all()
         bookings.extend(client_bookings)
-    return render_template('client/dashboard.html', bookings=bookings, clients=client_profiles)
+    return render_template('client/dashboard.html', bookings=bookings, clients=client_profiles, csrf_token=csrf_token)
 
 @client_bp.route('/book_lesson/<int:lesson_id>', methods=['GET', 'POST'])
 @login_required
@@ -75,6 +77,22 @@ def book_session(session_id):
         flash('Booking successful.')
         return redirect(url_for('client.dashboard'))
     return render_template('client/book_session.html', form=form, session=session_obj)
+
+@client_bp.route('/delete_booking/<int:booking_id>', methods=['POST'])
+@login_required
+def delete_booking(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+
+    # Ensure the booking belongs to the current user
+    client_ids = [client.id for client in Client.query.filter_by(user_id=current_user.id).all()]
+    if booking.client_id not in client_ids:
+        flash('You do not have permission to delete this booking.')
+        return redirect(url_for('client.dashboard'))
+
+    db.session.delete(booking)
+    db.session.commit()
+    flash('Your booking has been cancelled.')
+    return redirect(url_for('client.dashboard'))
 
 @client_bp.route('/lessons')
 @login_required

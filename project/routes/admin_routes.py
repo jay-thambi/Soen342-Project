@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from ..models import Client, Instructor, Lesson, User, db, LessonType, Location, City
+from ..models import Booking, Client, Instructor, Lesson, User, db, LessonType, Location, City
 from ..forms import CityForm, LessonForm, LessonTypeForm, LocationForm
 from flask_wtf.csrf import generate_csrf
 
@@ -122,3 +122,19 @@ def delete_user(user_id):
     db.session.commit()
     flash('User deleted successfully.')
     return redirect(url_for('admin.manage_users'))
+
+@admin_bp.route('/bookings')
+@login_required
+def manage_bookings():
+    bookings = Booking.query.order_by(Booking.id.desc()).all()
+    csrf_token = generate_csrf() 
+    return render_template('admin/bookings.html', bookings=bookings, csrf_token=csrf_token)
+
+@admin_bp.route('/delete_booking/<int:booking_id>', methods=['POST'])
+@login_required
+def delete_booking(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+    db.session.delete(booking)
+    db.session.commit()
+    flash('Booking deleted successfully.')
+    return redirect(url_for('admin.manage_bookings'))
