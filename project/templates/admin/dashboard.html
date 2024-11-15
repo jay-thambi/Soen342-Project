@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block title %}Administrator Dashboard{% endblock %}
-
 {% block content %}
 <h2>Admin Dashboard</h2>
 <div>
@@ -22,32 +21,77 @@
     <li><a href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
 </ul>
 
+<!-- Pending Lessons -->
 <h3>Pending Lessons</h3>
-<ul>
-    {% for lesson in pending_lessons %}
-        <li>
-            <strong>{{ lesson.lesson_type.name }}</strong> at <strong>{{ lesson.location.name }}</strong><br>
-            Mode: {{ lesson.mode }}<br>
-            Start Date: {{ lesson.start_date }}<br>
-            End Date: {{ lesson.end_date }}<br>
-            Day of Week: {{ lesson.day_of_week }}<br>
-            Time: {{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}
-        </li>
-    {% endfor %}
-</ul>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Lesson Type</th>
+            <th>Location</th>
+            <th>Mode</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Day of Week</th>
+            <th>Time</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in pending_lessons %}
+        <tr>
+            <td>{{ lesson.lesson_type.name }}</td>
+            <td>{{ lesson.location.name }}</td>
+            <td>{{ lesson.mode }}</td>
+            <td>{{ lesson.start_date }}</td>
+            <td>{{ lesson.end_date }}</td>
+            <td>{{ lesson.day_of_week }}</td>
+            <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
+<!-- Active Lessons -->
 <h3>Active Lessons</h3>
-<ul>
-    {% for lesson in active_lessons %}
-        <li>
-            <strong>{{ lesson.lesson_type.name }}</strong> at <strong>{{ lesson.location.name }}</strong><br>
-            Instructor: {{ lesson.assigned_instructor.user.name }}<br>
-            Mode: {{ lesson.mode }}<br>
-            Start Date: {{ lesson.start_date }}<br>
-            End Date: {{ lesson.end_date }}<br>
-            Day of Week: {{ lesson.day_of_week }}<br>
-            Time: {{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}
-        </li>
-    {% endfor %}
-</ul>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Lesson Type</th>
+            <th>Location</th>
+            <th>Instructor</th>
+            <th>Mode</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Day of Week</th>
+            <th>Time</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in active_lessons %}
+        <tr>
+            <td>{{ lesson.lesson_type.name }}</td>
+            <td>{{ lesson.location.name }}</td>
+            <td>{{ lesson.assigned_instructor.user.name }}</td>
+            <td>{{ lesson.mode }}</td>
+            <td>{{ lesson.start_date }}</td>
+            <td>{{ lesson.end_date }}</td>
+            <td>{{ lesson.day_of_week }}</td>
+            <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

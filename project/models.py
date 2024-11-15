@@ -8,7 +8,7 @@ db = SQLAlchemy()
 class Booking(db.Model):
     __tablename__ = 'bookings'
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id', name='fk_booking_session'), nullable=False)
+    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id', on_delete='CASCADE', name='fk_booking_session'), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id', name='fk_booking_client'), nullable=False)
     status = db.Column(db.String(20), nullable=False)  # 'active', 'cancelled'
 
@@ -70,7 +70,7 @@ class Lesson(db.Model):
     status = db.Column(db.String(20), nullable=False, default='pending_instructor')  # 'pending_instructor', 'active', 'archived'
 
     # Relationships
-    sessions = db.relationship('Session', back_populates='lesson', lazy=True)
+    sessions = db.relationship('Session', back_populates='lesson', lazy=True, cascade='all, delete-orphan')
     lesson_type = db.relationship('LessonType', back_populates='lessons', lazy=True)
     location = db.relationship('Location', back_populates='lessons', lazy=True)
     assigned_instructor = db.relationship('Instructor', back_populates='lessons', lazy=True)
@@ -104,13 +104,13 @@ class Location(db.Model):
 class Session(db.Model):
     __tablename__ = 'sessions'
     id = db.Column(db.Integer, primary_key=True)
-    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id', name='fk_session_lesson'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id', on_delete='CASCADE', name='fk_session_lesson'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     # Relationships
-    bookings = db.relationship('Booking', back_populates='session', lazy=True)
+    bookings = db.relationship('Booking', back_populates='session', lazy=True, cascade='all, delete-orphan')
     lesson = db.relationship('Lesson', back_populates='sessions', lazy=True)
 
 #! USER

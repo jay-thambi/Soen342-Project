@@ -16,6 +16,7 @@ def require_admin():
 @admin_bp.route('/dashboard')
 @login_required
 def dashboard():
+    csrf_token = generate_csrf() 
     pending_lessons = Lesson.query.filter_by(status='pending_instructor').order_by('start_date').all()
     active_lessons = Lesson.query.filter_by(status='active').order_by('start_date').all()
     users_count = User.query.count()
@@ -28,7 +29,8 @@ def dashboard():
                            users_count=users_count,
                            instructors_count=instructors_count,
                            clients_count=clients_count,
-                           admins_count=admins_count)
+                           admins_count=admins_count,
+                           csrf_token=csrf_token)
 
 @admin_bp.route('/create_lesson', methods=['GET', 'POST'])
 @login_required
@@ -52,6 +54,22 @@ def create_lesson():
         flash('Lesson created successfully.')
         return redirect(url_for('admin.dashboard'))
     return render_template('admin/create_lesson.html', form=form)
+
+@admin_bp.route('/delete_lesson/<int:lesson_id>', methods=['POST'])
+@login_required
+def delete_lesson(lesson_id):
+    lesson = Lesson.query.get_or_404(lesson_id)
+    
+    # Delete associated sessions and bookings
+    for session in lesson.sessions:
+        # Delete bookings for each session
+        Booking.query.filter_by(session_id=session.id).delete()
+        db.session.delete(session)
+    
+    db.session.delete(lesson)
+    db.session.commit()
+    flash('Lesson and associated sessions and bookings deleted successfully.')
+    return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/lesson_types', methods=['GET', 'POST'])
 @login_required
