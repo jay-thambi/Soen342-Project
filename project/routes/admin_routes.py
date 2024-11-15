@@ -175,6 +175,7 @@ def delete_location(location_id):
 @admin_bp.route('/users')
 @login_required
 def manage_users():
+    # users = User.query.filter(User.role.in_(['client', 'instructor'])).order_by('name').all()
     users = User.query.order_by('name').all()
     csrf_token = generate_csrf() 
     return render_template('admin/users.html', users=users, csrf_token=csrf_token)
@@ -184,7 +185,11 @@ def manage_users():
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
 
-        # Delete associated Client or Instructor
+    if user.role == 'admin':
+        flash('You cannot delete another admin.')
+        return redirect(url_for('admin.manage_users'))
+
+    # Delete associated Client or Instructor
     if user.role == 'client':
         client = Client.query.filter_by(user_id=user_id).first()
         if client:

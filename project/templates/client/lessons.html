@@ -14,6 +14,7 @@
             <th>Mode</th>
             <th>Day of Week</th>
             <th>Time</th>
+            <th>Date</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,6 +27,7 @@
             <td>{{ lesson.mode|capitalize }}</td>
             <td>{{ lesson.day_of_week }}</td>
             <td>{{ lesson.start_time.strftime('%I:%M %p') }} - {{ lesson.end_time.strftime('%I:%M %p') }}</td>
+            <td>{{ lesson.start_date.strftime('%B %d, %Y') }} - {{ lesson.end_date.strftime('%B %d, %Y') }}</td>
             <td>
                 <a href="{{ url_for('client.view_sessions', lesson_id=lesson.id) }}" class="btn btn-primary btn-sm">View Sessions</a>
             </td>
