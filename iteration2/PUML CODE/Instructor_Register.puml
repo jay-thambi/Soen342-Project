@@ -1,0 +1,45 @@
+@startuml
+actor "Instructor" as instructor
+participant "RegistrationForm" as form
+participant "InstructorValidator" as validator
+participant "DatabaseManager" as database
+participant "Instructor" as instructorEntity
+participant "Specialization" as specialization
+participant "City" as city
+
+instructor -> form : Open Registration Page
+form -> instructor : Display registration form
+instructor -> form : Fill in details (name, email, password, phone, specializations, cities)
+form -> validator : validateInstructorDetails(name, email, specializations, cities)
+
+validator -> validator : checkRequiredFields(name, email, specializations, cities)
+alt Missing Fields
+    validator --> form : Validation Failed (Missing required fields)
+    form -> instructor : Display Error: "Please fill in all required fields"
+else Fields Valid
+    validator -> database : checkEmailExists(email)
+    database --> validator : return emailExistsStatus
+    alt Email Exists
+        validator --> form : Validation Failed (Email already registered)
+        form -> instructor : Display Error: "Email already registered"
+    else Email Unique
+        validator --> form : Validation Passed
+        form -> database : createInstructor(name, email, hashedPassword, phone)
+        database -> instructorEntity ** : new Instructor(name, email, hashedPassword, phone)
+        instructorEntity --> database : Instructor Instance
+
+        loop For Each Specialization
+            form -> database : linkInstructorToSpecialization(instructorId, specializationId)
+            database --> form : Specialization Linked
+        end
+
+        loop For Each City
+            form -> database : linkInstructorToCity(instructorId, cityId)
+            database --> form : City Linked
+        end
+
+        database --> form : Save Success
+        form -> instructor : Registration Successful
+    end
+end
+@enduml

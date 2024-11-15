@@ -1,0 +1,32 @@
+@startuml
+
+package "Project" {
+}
+
+package "Core" {
+    package "Routes" {
+    }
+    package "Models" {
+    }
+    package "Forms" {
+    }
+}
+
+package "UI" {
+    package "Templates" {
+    }
+    package "Static" {
+    }
+}
+
+package "Database" {
+}
+
+Project --> Core
+Project --> UI
+Project --> Database
+
+Core --> Database
+UI --> Core
+
+@enduml

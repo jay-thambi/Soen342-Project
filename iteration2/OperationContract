@@ -1,0 +1,169 @@
+1. login
+
+	•	Operation: login(credentials)
+	•	Use Case: User Authentication
+
+Preconditions:
+
+	•	User’s credentials (username and password) must be in the system.
+
+Postconditions:
+
+	•	If credentials are valid:
+	•	User is logged in, and their role is set.
+	•	If credentials are invalid:
+	•	An error message is shown.
+
+2. addLocation
+
+	•	Operation: addLocation(city, address, location)
+	•	Use Case: Manage Locations
+
+Preconditions:
+
+	•	Admin must be logged in.
+	•	Location details (city, address, location) must be correct.
+
+Postconditions:
+
+	•	If location is unique:
+	•	System adds the location to the database.
+	•	If location already exists:
+	•	System shows an error message.
+
+3. verifyLocationUnique
+
+	•	Operation: verifyLocationUnique(locationDetails)
+	•	Use Case: Manage Locations
+
+Preconditions:
+
+	•	System has received valid location details.
+
+Postconditions:
+
+	•	If location doesn’t exist:
+	•	System confirms it’s unique.
+	•	If location already exists:
+	•	System shows an error indicating it’s already registered.
+
+4. createLesson
+
+	•	Operation: createLesson(type, startTime, endTime, date, capacity)
+	•	Use Case: Lesson Management
+
+Preconditions:
+
+	•	Admin must be logged in.
+	•	Lesson details (type, time, date, capacity) must be correct.
+
+Postconditions:
+
+	•	If lesson is unique:
+	•	System creates the lesson and associates it with a location.
+	•	If lesson conflicts with another:
+	•	System shows a scheduling conflict error.
+
+5. verifyLessonUnique
+
+	•	Operation: verifyLessonUnique(lessonDetails)
+	•	Use Case: Lesson Management
+
+Preconditions:
+
+	•	System has received valid lesson details.
+
+Postconditions:
+
+	•	If lesson doesn’t conflict:
+	•	System allows lesson creation.
+	•	If lesson conflicts:
+	•	System shows a conflict error.
+
+6. viewAvailableLessons
+
+	•	Operation: viewAvailableLessons()
+	•	Use Case: Instructor Lesson Selection
+
+Preconditions:
+
+	•	Instructor must be logged in.
+
+Postconditions:
+
+	•	System shows all lessons that haven’t been assigned to any instructor.
+
+7. selectLesson
+
+	•	Operation: selectLesson(lessonId)
+	•	Use Case: Instructor Lesson Selection
+
+Preconditions:
+
+	•	Instructor must be logged in.
+	•	Lesson must be available.
+
+Postconditions:
+
+	•	System assigns the lesson to the instructor.
+	•	Lesson is marked as unavailable for others.
+
+8. bookLesson
+
+	•	Operation: bookLesson(lessonId)
+	•	Use Case: Client Booking
+
+Preconditions:
+
+	•	Client must be logged in.
+	•	Lesson must be available and have open slots.
+
+Postconditions:
+
+	•	If lesson has space:
+	•	System creates a booking for the client and updates available slots.
+	•	If lesson is full:
+	•	System shows a “no available slots” error.
+
+9. addDependent
+
+	•	Operation: addDependent(name, birthdate)
+	•	Use Case: Client Dependent Management
+
+Preconditions:
+
+	•	Client must be logged in.
+	•	Dependent’s information (name, birthdate) must be correct.
+
+Postconditions:
+
+	•	System creates a profile for the dependent linked to the client.
+	•	Dependent can now be included in lesson bookings.
+
+10. viewClientBookings
+
+	•	Operation: viewClientBookings()
+	•	Use Case: View Bookings
+
+Preconditions:
+
+	•	Client must be logged in.
+
+Postconditions:
+
+	•	System shows a list of all bookings made by the client, including lesson details like date, time, and location.
+
+11. cancelBooking
+
+	•	Operation: cancelBooking(bookingId)
+	•	Use Case: Booking Cancellation
+
+Preconditions:
+
+	•	Client must be logged in.
+	•	The booking exists and is linked to the client.
+
+Postconditions:
+
+	•	System deletes the booking from the client’s records.
+	•	Lesson’s available slots are updated to reflect the cancellation.

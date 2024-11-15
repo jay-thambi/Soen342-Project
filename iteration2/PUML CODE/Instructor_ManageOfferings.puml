@@ -1,0 +1,47 @@
+@startuml
+actor "Instructor" as instructor
+participant "OfferingsPage" as offeringsPage
+participant "OfferingValidator" as validator
+participant "DatabaseManager" as database
+participant "Lesson" as lesson
+
+instructor -> offeringsPage : Open Manage Offerings Page
+offeringsPage -> database : queryAvailableOfferings(instructorId)
+database --> offeringsPage : return available offerings
+offeringsPage -> instructor : Display available offerings
+
+alt Instructor Accepts an Offering
+    instructor -> offeringsPage : Select "Accept Offering" (lessonId)
+    offeringsPage -> validator : validateOfferingAcceptance(instructorId, lessonId)
+    validator -> database : checkSpecializationAndAvailability(instructorId, lessonId)
+    database --> validator : return validation status
+    alt Validation Failed
+        validator --> offeringsPage : Validation Failed (Does not meet requirements)
+        offeringsPage -> instructor : Display Error: "Cannot accept this offering"
+    else Validation Passed
+        validator --> offeringsPage : Validation Passed
+        offeringsPage -> database : updateLessonStatus(lessonId, "assigned", instructorId)
+        database --> offeringsPage : Update Successful
+        offeringsPage -> instructor : Offering successfully accepted
+    end
+else Instructor Drops an Offering
+    instructor -> offeringsPage : Select "Drop Offering" (lessonId)
+    offeringsPage -> validator : validateOfferingDrop(instructorId, lessonId)
+    validator -> database : checkLessonOwnership(instructorId, lessonId)
+    database --> validator : return ownership status
+    alt Validation Failed
+        validator --> offeringsPage : Validation Failed (Instructor not assigned to lesson)
+        offeringsPage -> instructor : Display Error: "Cannot drop this offering"
+    else Validation Passed
+        validator --> offeringsPage : Validation Passed
+        offeringsPage -> database : updateLessonStatus(lessonId, "pending", null)
+        database --> offeringsPage : Update Successful
+        offeringsPage -> instructor : Offering successfully dropped
+    end
+else Instructor Views Offering Details
+    instructor -> offeringsPage : View Details (lessonId)
+    offeringsPage -> database : fetchLessonDetails(lessonId)
+    database --> offeringsPage : return lesson details
+    offeringsPage -> instructor : Display lesson details
+end
+@enduml

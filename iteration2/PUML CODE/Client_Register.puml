@@ -1,0 +1,38 @@
+@startuml
+actor "Client" as client
+participant "RegistrationForm" as form
+participant "ClientValidator" as validator
+participant "DatabaseManager" as database
+participant "Client" as clientEntity
+
+client -> form : Open Registration Page
+form -> client : Display registration form
+client -> form : Fill in details (name, email, password, dob, phone)
+form -> validator : validateClientDetails(name, email, dob)
+
+validator -> validator : checkRequiredFields(name, email, dob)
+alt Missing Fields
+    validator --> form : Validation Failed (Missing required fields)
+    form -> client : Display Error: "Please fill in all required fields"
+else Fields Valid
+    validator -> database : checkEmailExists(email)
+    database --> validator : return emailExistsStatus
+    alt Email Exists
+        validator --> form : Validation Failed (Email already registered)
+        form -> client : Display Error: "Email already registered"
+    else Email Unique
+        validator -> validator : checkAge(dob)
+        alt Client is Underage
+            validator --> form : Validation Failed (Client must be 18 or older)
+            form -> client : Display Error: "You must be 18 or older to register"
+        else Validation Passed
+            validator --> form : Validation Passed
+            form -> database : createClient(name, email, hashedPassword, dob, phone)
+            database -> clientEntity ** : new Client(name, email, hashedPassword, dob, phone)
+            clientEntity --> database : Client Instance
+            database --> form : Save Success
+            form -> client : Registration Successful
+        end
+    end
+end
+@enduml

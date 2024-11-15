@@ -1,0 +1,31 @@
+@startuml
+actor "Instructor" as instructor
+participant "OfferingsPage" as offeringsPage
+participant "OfferingValidator" as validator
+participant "DatabaseManager" as database
+participant "Lesson" as lesson
+
+instructor -> offeringsPage : Open Available Offerings Page
+offeringsPage -> database : queryAvailableOfferings(instructorId)
+database --> offeringsPage : return available offerings
+offeringsPage -> instructor : Display available offerings
+
+instructor -> offeringsPage : Select Offering (lessonId)
+offeringsPage -> validator : validateOfferingSelection(instructorId, lessonId)
+
+validator -> database : checkInstructorEligibility(instructorId, lessonId)
+database --> validator : return eligibility status
+
+validator -> database : checkLessonAvailability(lessonId)
+database --> validator : return availability status
+
+alt Validation Failed
+    validator --> offeringsPage : Validation Failed (Eligibility or Availability Issue)
+    offeringsPage -> instructor : Display Error: "Cannot select this offering"
+else Validation Passed
+    validator --> offeringsPage : Validation Passed
+    offeringsPage -> database : assignInstructorToLesson(lessonId, instructorId)
+    database --> offeringsPage : Assignment Successful
+    offeringsPage -> instructor : Offering successfully selected
+end
+@enduml

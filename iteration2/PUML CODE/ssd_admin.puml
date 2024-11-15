@@ -1,0 +1,28 @@
+@startuml
+
+actor Admin as Administrator
+participant System
+
+Administrator -> System : login(username, password)
+System -> System : setUserRole("admin")
+System --> Administrator : role = "admin"
+
+Administrator -> System : addLocation(city, address, location)
+System -> System : verifyLocationExistence()
+
+alt Location is unique
+    System --> Administrator : success
+else Location exists
+    System --> Administrator : error
+end
+
+Administrator -> System : addLesson(offering, startTime, endTime, date, capacity)
+System -> System : verifyLessonExistence()
+
+alt Lesson is unique
+    System --> Administrator : success
+else Lesson exists
+    System --> Administrator : error
+end
+
+@enduml

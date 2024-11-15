@@ -1,0 +1,49 @@
+@startuml
+actor "Client" as client
+participant "BookingsPage" as bookingsPage
+participant "BookingValidator" as validator
+participant "DatabaseManager" as database
+participant "Booking" as booking
+
+client -> bookingsPage : Open Manage Bookings Page
+bookingsPage -> database : queryClientBookings(clientId)
+database --> bookingsPage : return bookings
+bookingsPage -> client : Display bookings list
+
+alt Client Cancels a Booking
+    client -> bookingsPage : Select "Cancel Booking" (bookingId)
+    bookingsPage -> validator : validateCancellation(clientId, bookingId)
+    validator -> database : checkBookingOwnership(clientId, bookingId)
+    database --> validator : return ownership status
+    validator -> validator : checkCancellationRules(bookingId)
+    alt Validation Failed
+        validator --> bookingsPage : Validation Failed (Cannot cancel booking)
+        bookingsPage -> client : Display Error: "Cannot cancel this booking"
+    else Validation Passed
+        validator --> bookingsPage : Validation Passed
+        bookingsPage -> database : deleteBooking(bookingId)
+        database --> bookingsPage : Deletion Successful
+        bookingsPage -> client : Booking successfully canceled
+    end
+else Client Edits a Booking
+    client -> bookingsPage : Select "Edit Booking" (bookingId)
+    bookingsPage -> validator : validateEdit(clientId, bookingId)
+    validator -> database : checkBookingOwnership(clientId, bookingId)
+    database --> validator : return ownership status
+    validator -> validator : checkEditRules(bookingId)
+    alt Validation Failed
+        validator --> bookingsPage : Validation Failed (Cannot edit booking)
+        bookingsPage -> client : Display Error: "Cannot edit this booking"
+    else Validation Passed
+        validator --> bookingsPage : Validation Passed
+        bookingsPage -> database : updateBooking(bookingId, newDetails)
+        database --> bookingsPage : Update Successful
+        bookingsPage -> client : Booking successfully updated
+    end
+else Client Views Bookings
+    client -> bookingsPage : View Details (bookingId)
+    bookingsPage -> database : fetchBookingDetails(bookingId)
+    database --> bookingsPage : return booking details
+    bookingsPage -> client : Display booking details
+end
+@enduml

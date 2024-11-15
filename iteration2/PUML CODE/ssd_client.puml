@@ -1,0 +1,29 @@
+@startuml
+
+actor Client
+participant System
+
+Client -> System : login(username, password)
+System -> System : setUserRole("client")
+System --> Client : role = "client"
+
+Client -> System : viewAvailableLessons()
+System --> Client : list of lessons
+
+Client -> System : selectLesson(lessonID)
+System -> System : checkLessonAvailability(lessonID)
+
+alt Lesson is available
+    System --> Client : success
+    Client -> System : bookLesson(lessonID)
+    System -> System : createBooking()
+    System --> Client : booking confirmation
+else Lesson is not available
+    System --> Client : error
+end
+
+Client -> System : addDependent(name, birthdate)
+System -> System : createDependentProfile()
+System --> Client : dependent added confirmation
+
+@enduml

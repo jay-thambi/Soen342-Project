@@ -1,0 +1,52 @@
+@startuml
+actor "Admin" as admin
+participant "UserManagementPage" as userPage
+participant "UserValidator" as validator
+participant "DatabaseManager" as database
+participant "BookingManager" as bookingManager
+participant "LessonManager" as lessonManager
+
+admin -> userPage : Open User Management Page
+userPage -> admin : Display user list
+admin -> userPage : Select user to delete (userId)
+userPage -> validator : validateUserDeletion(userId)
+validator -> database : getUserById(userId)
+database --> validator : return user (or null)
+
+alt User Not Found
+    validator --> userPage : Validation Failed (User does not exist)
+    userPage -> admin : Display Error: "User not found"
+else User Exists
+    validator -> validator : checkUserRole(user)
+    alt User is Admin
+        validator --> userPage : Validation Failed (Cannot delete admin)
+        userPage -> admin : Display Error: "Cannot delete another admin"
+    else User is Client or Instructor
+        alt User is Client
+            validator -> bookingManager : checkActiveBookings(userId)
+            bookingManager --> validator : return activeBookingStatus
+            alt Active Bookings Exist
+                validator --> userPage : Validation Failed (Cannot delete user with active bookings)
+                userPage -> admin : Display Error: "User has active bookings"
+            else No Active Bookings
+                validator --> userPage : Validation Passed
+                userPage -> database : deleteUser(userId)
+                database --> userPage : Deletion Successful
+                userPage -> admin : User successfully deleted
+            end
+        else User is Instructor
+            validator -> lessonManager : checkAssignedLessons(userId)
+            lessonManager --> validator : return lessonStatus
+            alt Lessons Assigned
+                validator --> userPage : Validation Failed (Cannot delete user with assigned lessons)
+                userPage -> admin : Display Error: "User has assigned lessons"
+            else No Assigned Lessons
+                validator --> userPage : Validation Passed
+                userPage -> database : deleteUser(userId)
+                database --> userPage : Deletion Successful
+                userPage -> admin : User successfully deleted
+            end
+        end
+    end
+end
+@enduml

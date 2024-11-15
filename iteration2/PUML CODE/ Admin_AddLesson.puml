@@ -1,0 +1,31 @@
+@startuml
+actor "Admin" as admin
+participant "CreateLessonForm" as createLessonForm
+participant "LessonCatalog" as catalog
+participant "Validator" as validator
+participant "DatabaseManager" as database
+participant "Lesson" as lesson
+
+admin -> createLessonForm : Open Add Lesson Page
+createLessonForm -> admin : Display form (Location, Type, Schedule, Times, Capacity)
+admin -> createLessonForm : Enter lesson details
+createLessonForm -> validator : validateLesson(locationId, startTime, endTime, schedule, capacity)
+validator -> catalog : checkConflicts(locationId, schedule)
+catalog -> database : queryLessonsByLocation(locationId)
+database --> catalog : return existing lessons
+catalog -> validator : return conflict status
+
+loop Validation Failed
+    validator --> createLessonForm : Validation Error (e.g., Time Conflict)
+    createLessonForm -> admin : Display Error Message
+else Validation Passed
+    validator --> createLessonForm : Validation Success
+    createLessonForm -> catalog : createLesson(locationId, lessonType, schedule, times, capacity)
+    catalog -> lesson ** : new Lesson(locationId, lessonType, schedule, times, capacity)
+    lesson --> catalog : Lesson Instance
+    catalog -> database : saveLesson(lesson)
+    database --> catalog : Save Success
+    catalog --> createLessonForm : Lesson Created
+    createLessonForm -> admin : Lesson Successfully Added
+end
+@enduml

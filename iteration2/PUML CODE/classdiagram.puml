@@ -1,0 +1,116 @@
+@startuml
+
+!define RECTANGLE class
+skinparam classAttributeIconSize 0
+
+RECTANGLE User {
+    + id: Integer
+    + name: String
+    + email: String
+    + password: String
+    + role: String
+    + phone_number: String
+}
+
+RECTANGLE Admin {
+    + manageUsers(): void
+    + createLesson(): void
+    + deleteLesson(): void
+    + viewAllBookings(): [Booking]
+}
+
+RECTANGLE Client {
+    + id: Integer
+    + user_id: Integer
+    + name: String
+    + date_of_birth: Date
+    + bookings: [Booking]
+}
+
+RECTANGLE Instructor {
+    + id: Integer
+    + user_id: Integer
+    + specializations: [LessonType]
+    + availability_cities: [City]
+    + lessons: [Lesson]
+}
+
+RECTANGLE LessonType {
+    + id: Integer
+    + name: String
+    + lessons: [Lesson]
+}
+
+RECTANGLE City {
+    + id: Integer
+    + name: String
+    + locations: [Location]
+}
+
+RECTANGLE Location {
+    + id: Integer
+    + name: String
+    + address: String
+    + city_id: Integer
+    + city: City
+    + lessons: [Lesson]
+}
+
+RECTANGLE Lesson {
+    + id: Integer
+    + lesson_type_id: Integer
+    + location_id: Integer
+    + mode: String
+    + capacity: Integer
+    + start_date: Date
+    + end_date: Date
+    + day_of_week: String
+    + start_time: Time
+    + end_time: Time
+    + instructor_id: Integer
+    + status: String
+    + sessions: [Session]
+    + lesson_type: LessonType
+    + location: Location
+    + assigned_instructor: Instructor
+}
+
+RECTANGLE Session {
+    + id: Integer
+    + lesson_id: Integer
+    + date: Date
+    + start_time: Time
+    + end_time: Time
+    + capacity: Integer
+    + bookings: [Booking]
+    + lesson: Lesson
+}
+
+RECTANGLE Booking {
+    + id: Integer
+    + session_id: Integer
+    + client_id: Integer
+    + status: String
+    + session: Session
+    + client: Client
+}
+
+User <|-- Admin
+User <|-- Client
+User <|-- Instructor
+
+Client "1" -- "0..*" Booking
+Instructor "1" -- "0..*" Lesson
+Instructor "1" -- "0..*" LessonType
+Instructor "1" -- "0..*" City
+LessonType "1" -- "0..*" Lesson
+City "1" -- "0..*" Location
+Location "1" -- "0..*" Lesson
+Lesson "1" -- "0..*" Session
+Lesson "1" -- "1" LessonType
+Lesson "1" -- "1" Location
+Lesson "0..1" -- "1" Instructor : assigned_instructor
+Session "1" -- "0..*" Booking
+Session "1" -- "1" Lesson
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+
+actor Instructor
+participant System
+
+Instructor -> System : login(username, password)
+System -> System : setUserRole("instructor")
+System --> Instructor : role = "instructor"
+
+Instructor -> System : viewAvailableLessons()
+System --> Instructor : list of lessons
+
+Instructor -> System : selectLesson(lessonID)
+System -> System : checkLessonAvailability(lessonID)
+
+alt Lesson is available
+    System --> Instructor : success
+    Instructor -> System : acceptLesson(lessonID)
+    System -> System : assignLessonToInstructor()
+    System --> Instructor : confirmation
+else Lesson is not available
+    System --> Instructor : error
+end
+
+@enduml

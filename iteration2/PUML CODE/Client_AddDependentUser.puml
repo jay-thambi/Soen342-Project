@@ -1,0 +1,33 @@
+@startuml
+actor "Client" as client
+participant "AddDependentForm" as form
+participant "DependentValidator" as validator
+participant "DatabaseManager" as database
+participant "Dependent" as dependent
+
+client -> form : Open Add Dependent Page
+form -> client : Display form (Name, DOB)
+client -> form : Enter dependent details
+form -> validator : validateDependent(clientId, name, dob)
+
+validator -> validator : checkAge(dob)
+alt Dependent is 18 or older
+    validator --> form : Validation Failed (Dependent must be under 18)
+    form -> client : Display Error: "Dependent must be under 18"
+else Dependent is valid
+    validator -> database : queryDependentsByClient(clientId)
+    database --> validator : return existing dependents
+    validator -> validator : checkDuplicate(name, dob, existingDependents)
+    alt Duplicate Dependent Exists
+        validator --> form : Validation Failed (Duplicate dependent)
+        form -> client : Display Error: "Duplicate dependent already exists"
+    else Validation Passed
+        validator --> form : Validation Passed
+        form -> database : addDependent(clientId, name, dob)
+        database -> dependent ** : new Dependent(clientId, name, dob)
+        dependent --> database : Dependent Instance
+        database --> form : Save Success
+        form -> client : Dependent Successfully Added
+    end
+end
+@enduml

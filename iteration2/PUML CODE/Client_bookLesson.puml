@@ -1,0 +1,32 @@
+@startuml
+actor "Client" as client
+participant "LessonListPage" as lessonList
+participant "BookingValidator" as validator
+participant "DatabaseManager" as database
+participant "Booking" as booking
+
+client -> lessonList : Open Available Lessons Page
+lessonList -> database : queryAvailableLessons()
+database --> lessonList : return available lessons
+lessonList -> client : Display list of lessons
+
+client -> lessonList : Select lesson (lessonId)
+lessonList -> validator : validateBooking(clientId, lessonId)
+
+validator -> database : checkLessonAvailability(lessonId)
+database --> validator : return availability status
+validator -> database : checkClientConflicts(clientId, lessonId)
+database --> validator : return conflict status
+
+alt Validation Failed
+    validator --> lessonList : Validation Failed (Lesson unavailable or conflicts exist)
+    lessonList -> client : Display Error: "Cannot book this lesson (conflict or full)"
+else Validation Passed
+    validator --> lessonList : Validation Passed
+    lessonList -> database : createBooking(clientId, lessonId)
+    database -> booking ** : new Booking(clientId, lessonId)
+    booking --> database : Booking Instance
+    database --> lessonList : Save Success
+    lessonList -> client : Booking Successfully Created
+end
+@enduml
