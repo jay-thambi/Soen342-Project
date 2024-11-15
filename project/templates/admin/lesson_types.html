@@ -22,7 +22,13 @@
 <h3>Existing Lesson Types</h3>
 <ul>
     {% for lt in lesson_types %}
-        <li>{{ lt.name }}</li>
+        <li>
+            {{ lt.name }}
+            <form method="post" action="{{ url_for('admin.delete_lesson_type', lesson_type_id=lt.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this lesson type?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </li>
     {% endfor %}
 </ul>
 {% endblock %}

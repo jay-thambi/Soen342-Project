@@ -33,6 +33,7 @@
             <th>End Date</th>
             <th>Day of Week</th>
             <th>Time</th>
+            <th>Capacity</th>
             <th>Delete</th>
         </tr>
     </thead>
@@ -46,6 +47,7 @@
             <td>{{ lesson.end_date }}</td>
             <td>{{ lesson.day_of_week }}</td>
             <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
+            <td>{{ lesson.capacity }}</td>
             <td>
                 <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
@@ -70,6 +72,7 @@
             <th>End Date</th>
             <th>Day of Week</th>
             <th>Time</th>
+            <th>Capacity</th>
             <th>Delete</th>
         </tr>
     </thead>
@@ -84,6 +87,7 @@
             <td>{{ lesson.end_date }}</td>
             <td>{{ lesson.day_of_week }}</td>
             <td>{{ lesson.start_time.strftime('%H:%M') }} - {{ lesson.end_time.strftime('%H:%M') }}</td>
+            <td>{{ lesson.capacity }}</td>
             <td>
                 <form method="post" action="{{ url_for('admin.delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">

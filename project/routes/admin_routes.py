@@ -75,6 +75,7 @@ def delete_lesson(lesson_id):
 @login_required
 def manage_lesson_types():
     form = LessonTypeForm()
+    csrf_token = generate_csrf() 
     if form.validate_on_submit():
         new_lesson_type = LessonType(name=form.name.data)
         db.session.add(new_lesson_type)
@@ -82,12 +83,33 @@ def manage_lesson_types():
         flash('Lesson type added successfully.')
         return redirect(url_for('admin.manage_lesson_types'))
     lesson_types = LessonType.query.order_by('name').all()
-    return render_template('admin/lesson_types.html', form=form, lesson_types=lesson_types)
+    return render_template('admin/lesson_types.html', form=form, lesson_types=lesson_types, csrf_token=csrf_token)
+
+@admin_bp.route('/delete_lesson_type/<int:lesson_type_id>', methods=['POST'])
+@login_required
+def delete_lesson_type(lesson_type_id):
+    lesson_type = LessonType.query.get_or_404(lesson_type_id)
+
+    # Check for associated lessons
+    if lesson_type.lessons:
+        flash('Cannot delete lesson type with associated lessons.')
+        return redirect(url_for('admin.manage_lesson_types'))
+
+    # Remove associations with instructors
+    instructors = lesson_type.instructors
+    for instructor in instructors:
+        instructor.specializations.remove(lesson_type)
+
+    db.session.delete(lesson_type)
+    db.session.commit()
+    flash('Lesson type deleted successfully.')
+    return redirect(url_for('admin.manage_lesson_types'))
 
 @admin_bp.route('/cities', methods=['GET', 'POST'])
 @login_required
 def manage_cities():
     form = CityForm()
+    csrf_token = generate_csrf() 
     if form.validate_on_submit():
         new_city = City(name=form.name.data)
         db.session.add(new_city)
@@ -95,12 +117,33 @@ def manage_cities():
         flash('City added successfully.')
         return redirect(url_for('admin.manage_cities'))
     cities = City.query.order_by('name').all()
-    return render_template('admin/cities.html', form=form, cities=cities)
+    return render_template('admin/cities.html', form=form, cities=cities, csrf_token=csrf_token)
+
+@admin_bp.route('/delete_city/<int:city_id>', methods=['POST'])
+@login_required
+def delete_city(city_id):
+    city = City.query.get_or_404(city_id)
+
+    # Check for associated locations
+    if city.locations:
+        flash('Cannot delete city with associated locations.')
+        return redirect(url_for('admin.manage_cities'))
+
+    # Remove associations with instructors
+    instructors = city.instructors
+    for instructor in instructors:
+        instructor.availability_cities.remove(city)
+
+    db.session.delete(city)
+    db.session.commit()
+    flash('City deleted successfully.')
+    return redirect(url_for('admin.manage_cities'))
 
 @admin_bp.route('/locations', methods=['GET', 'POST'])
 @login_required
 def manage_locations():
     form = LocationForm()
+    csrf_token = generate_csrf() 
     if form.validate_on_submit():
         new_location = Location(
             name=form.name.data,
@@ -112,7 +155,22 @@ def manage_locations():
         flash('Location added successfully.')
         return redirect(url_for('admin.manage_locations'))
     locations = Location.query.order_by('name').all()
-    return render_template('admin/locations.html', form=form, locations=locations)
+    return render_template('admin/locations.html', form=form, locations=locations, csrf_token=csrf_token)
+
+@admin_bp.route('/delete_location/<int:location_id>', methods=['POST'])
+@login_required
+def delete_location(location_id):
+    location = Location.query.get_or_404(location_id)
+
+    # Check for associated lessons
+    if location.lessons:
+        flash('Cannot delete location with associated lessons.')
+        return redirect(url_for('admin.manage_locations'))
+
+    db.session.delete(location)
+    db.session.commit()
+    flash('Location deleted successfully.')
+    return redirect(url_for('admin.manage_locations'))
 
 @admin_bp.route('/users')
 @login_required
