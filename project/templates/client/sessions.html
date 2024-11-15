@@ -1,0 +1,30 @@
+<!-- templates/client/sessions.html -->
+{% extends 'base.html' %}
+
+{% block title %}Available Sessions{% endblock %}
+
+{% block content %}
+<h2>Available Sessions for {{ lesson.lesson_type.name }} at {{ lesson.location.name }}</h2>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Available Spots</th>
+        <th>Action</th>
+    </tr>
+    {% for session in sessions %}
+        <tr>
+            <td>{{ session.date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ session.start_time.strftime('%H:%M') }} - {{ session.end_time.strftime('%H:%M') }}</td>
+            <td>{{ session.capacity - session.bookings|length }}</td>
+            <td>
+                {% if session.capacity - session.bookings|length > 0 %}
+                    <a href="{{ url_for('client.book_session', session_id=session.id) }}">Book Session</a>
+                {% else %}
+                    <span>Fully Booked</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

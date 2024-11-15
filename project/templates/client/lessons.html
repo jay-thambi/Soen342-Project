@@ -11,7 +11,8 @@
         <p>Instructor: {{ lesson.assigned_instructor.user.name }}</p>
         <p>{{ lesson.mode }} class</p>
         <p>Schedule: {{ lesson.day_of_week }} from {{ lesson.start_time }} to {{ lesson.end_time }}</p>
-        <a href="{{ url_for('client.book_lesson', lesson_id=lesson.id) }}">Book Lesson</a>
+        <!-- <a href="{{ url_for('client.book_lesson', lesson_id=lesson.id) }}">Book Lesson</a> -->
+        <a href="{{ url_for('client.view_sessions', lesson_id=lesson.id) }}">View Sessions</a>
     </div>
 {% endfor %}
 {% endblock %}

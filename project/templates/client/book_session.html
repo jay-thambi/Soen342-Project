@@ -1,18 +1,22 @@
+<!-- templates/client/book_session.html -->
 {% extends 'base.html' %}
 
 {% block title %}Book Session{% endblock %}
 
 {% block content %}
 <h2>Book Session</h2>
-<p>Session Details:</p>
-<ul>
-    <li>Date: {{ session.date }}</li>
-    <li>Time: {{ session.start_time }} - {{ session.end_time }}</li>
-    <li>Capacity: {{ session.capacity }}</li>
-</ul>
+<p>You are booking: {{ session.lesson.lesson_type.name }} on {{ session.date.strftime('%Y-%m-%d') }}</p>
 <form method="post">
     {{ form.hidden_tag() }}
-    {{ form.client_id.label }} {{ form.client_id() }}<br>
-    {{ form.submit() }}
+    <div>
+        {{ form.client_id.label }}
+        {{ form.client_id(class="form-control") }}
+        {% for error in form.client_id.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
 </form>
 {% endblock %}

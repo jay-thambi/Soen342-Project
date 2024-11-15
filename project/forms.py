@@ -61,7 +61,8 @@ class LoginForm(FlaskForm):
 
 #! CLIENT FORMS
 class BookingForm(FlaskForm):
-    submit = SubmitField('Book Lesson')
+    client_id = SelectField('Select Client', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Book Session')
 
 class DependentForm(FlaskForm):
     name = StringField('Dependent Name', validators=[DataRequired(), Length(1, 120)])

@@ -46,16 +46,19 @@ def take_lesson(lesson_id):
     lesson.instructor_id = current_user.instructor_profile.id
     lesson.status = 'active'
     db.session.commit()
+
+    generate_sessions(lesson) # Generate sessions for the lesson
+
     flash('You have successfully taken on the lesson.')
     return redirect(url_for('instructor.available_lessons'))
 
-def generate_sessions(offering):
-    # Logic to generate sessions based on offering details
+def generate_sessions(lesson):
+    # Logic to generate sessions based on lesson details
     from datetime import timedelta
 
-    day_of_week = offering.day_of_week  # e.g., 'Sunday'
-    current_date = offering.start_date
-    end_date = offering.end_date
+    day_of_week = lesson.day_of_week  # e.g., 'Sunday'
+    current_date = lesson.start_date
+    end_date = lesson.end_date
 
     # Map day names to numbers (Monday=0, Sunday=6)
     day_numbers = {
@@ -70,11 +73,11 @@ def generate_sessions(offering):
 
     while current_date <= end_date:
         new_session = Session(
-            offering_id=offering.id,
+            lesson_id=lesson.id,
             date=current_date,
-            start_time=offering.start_time,
-            end_time=offering.end_time,
-            capacity=offering.capacity
+            start_time=lesson.start_time,
+            end_time=lesson.end_time,
+            capacity=lesson.capacity
         )
         db.session.add(new_session)
         current_date += timedelta(days=7)  # Move to the next week
