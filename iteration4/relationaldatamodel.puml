@@ -1,0 +1,97 @@
+@startuml
+
+entity Users {
+    * id <<pk>>
+    --
+    name
+    email <<unique>>
+    password
+    role
+    phone_number
+}
+
+entity Clients {
+    * id <<pk>>
+    --
+    user_id <<fk>>
+    name
+    date_of_birth
+    guardian_id <<fk>>
+}
+
+entity Instructors {
+    * id <<pk>>
+    --
+    user_id <<fk>>
+}
+
+entity LessonTypes {
+    * id <<pk>>
+    --
+    name <<unique>>
+}
+
+entity Cities {
+    * id <<pk>>
+    --
+    name <<unique>>
+}
+
+entity Locations {
+    * id <<pk>>
+    --
+    name
+    address
+    city_id <<fk>>
+}
+
+entity Lessons {
+    * id <<pk>>
+    --
+    lesson_type_id <<fk>>
+    location_id <<fk>>
+    mode
+    capacity
+    start_date
+    end_date
+    day_of_week
+    start_time
+    end_time
+    instructor_id <<fk>>
+    status
+}
+
+entity Sessions {
+    * id <<pk>>
+    --
+    lesson_id <<fk>>
+    date
+    start_time
+    end_time
+    capacity
+    UNIQUE (location_id, date, start_time, end_time)
+}
+
+entity Bookings {
+    * id <<pk>>
+    --
+    session_id <<fk>>
+    client_id <<fk>>
+    status
+}
+
+entity InstructorSpecializations {
+    instructor_id <<fk>>
+    lesson_type_id <<fk>>
+    --
+    PRIMARY KEY (instructor_id, lesson_type_id)
+}
+
+entity InstructorCities {
+    instructor_id <<fk>>
+    city_id <<fk>>
+    --
+    PRIMARY KEY (instructor_id, city_id)
+}
+
+@enduml
