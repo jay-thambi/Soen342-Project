@@ -3,6 +3,8 @@
 ### Team Members:
 - Alexander Kepekci, 40113003
 - Sanjay Thambithurai, 40184405
+- TEAM 42
+- Christa Abu-Arraj as TA
 
 ---
 
